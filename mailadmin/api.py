@@ -1,10 +1,15 @@
-# CPanel API
-# https://documentation.cpanel.net/display/SDK/cPanel+API+2+-+Email
 import requests
+from django.conf import settings
 
 
 class CPanel(object):
-    def __init__(self, base_url, username, password):
+    """
+    CPanel API
+
+    https://documentation.cpanel.net/display/SDK/cPanel+API+2+-+Email
+    https://documentation.cpanel.net/display/SDK/cPanel+API+1+-+Email
+    """
+    def __init__(self, base_url=settings.CP_API_URL, username=settings.CP_API_USERNAME, password=settings.CP_API_PASSWORD):
         self.base_url = base_url
         self.username = username
         self.password = password
@@ -27,15 +32,3 @@ class CPanel(object):
             auth=requests.auth.HTTPBasicAuth(self.username, self.password),
             verify=False)
         return r.json()
-
-
-if __name__ == '__main__':
-    import settings
-     
-    server = CPanel(settings.base_url, settings.username, settings.password)
-
-    params = dict(
-        domain='studentersamfundet.no',
-        regex='kak-*'
-    )
-    print server.api('Email', 'listforwards', params)
