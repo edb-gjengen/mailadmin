@@ -1,9 +1,10 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
 
 from mailadmin.api import CPanel
+from mailadmin.models import OrgUnit
 
 
 def home(request):
@@ -17,11 +18,11 @@ class ForwardsViewSet(viewsets.ViewSet):
     def list(self, request):
         cp = CPanel()
         regexp = self.request.QUERY_PARAMS.get('regexp', None)
-        # TODO
-        # Get prefixes for his groups
-        #u = request.user
-        #print u
-        # Define regexp
+        my_groups = request.user.groups.values_list('pk', flat=True)
+        print my_groups
+        ous = OrgUnit.objects.filter(admin_groups__in=my_groups).values_list('prefix', flat=True)
+        ous = set(ous)
+        print ous
         #regexp = 'kak-*'
         params = dict(
             domain='studentersamfundet.no',

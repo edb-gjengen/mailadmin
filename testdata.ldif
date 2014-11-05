@@ -4,8 +4,8 @@ objectClass: top
 objectClass: organizationalUnit
 ou: People
 
-# Account test with password "test"
-dn: uid=test,ou=People,dc=neuf,dc=no
+# Account testesen with password "test"
+dn: uid=testesen,ou=People,dc=neuf,dc=no
 objectClass: inetOrgPerson
 objectClass: posixAccount
 objectClass: shadowAccount
@@ -34,9 +34,9 @@ objectClass: organizationalUnit
 ou: Groups
 
 # Private group
-dn: cn=test,ou=Groups,dc=neuf,dc=no
+dn: cn=testesen,ou=Groups,dc=neuf,dc=no
 objectClass: posixGroup
-cn: test
+cn: testesen
 gidNumber: 10005
 description: Group account
 
@@ -46,18 +46,18 @@ objectClass: posixGroup
 cn: dns-alle
 gidNumber: 1
 description: Group account
-memberUid: test
+memberUid: testesen
 
 dn: cn=edb,ou=Groups,dc=neuf,dc=no
 objectClass: posixGroup
 cn: edb
 gidNumber: 2
 description: Group account
-memberUid: test
+memberUid: testesen
 
 dn: cn=edbadmin,ou=Groups,dc=neuf,dc=no
 objectClass: posixGroup
 cn: edbadmin
 gidNumber: 3
 description: Group account
-memberUid: test
+memberUid: testesen
