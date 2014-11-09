@@ -48,7 +48,7 @@ gulp.task('fonts', function () {
 gulp.task('templates', function () {
     return gulp.src('app/templates/list.html')
         .pipe($.nunjucks())
-        .pipe(gulp.dest('dist'))
+        .pipe(gulp.dest('dist/templates'))
         .pipe($.size());
 });
 
