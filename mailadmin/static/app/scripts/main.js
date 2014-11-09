@@ -24,5 +24,9 @@ $(document).ready(function() {
 		});
 
 		$(".forwards-container").html(forward_html);
+
+		$("input[name=fwd-delete]").click(function() {
+			$(this).parent().parent().toggleClass('danger');
+		});
 	});
 });

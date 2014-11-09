@@ -2,6 +2,7 @@
 {% load bootstrap %}
 {% block "body" %}
 <div class="container">
+    <div class="row">
     {% if not user.is_authenticated %}
         <form method="post">
             {{ form|bootstrap }}
@@ -12,11 +13,10 @@
         <div class="greeting">Hei, {{ user.username }}</div>
         <a href="{% url 'logout' %}">Logg ut</a>.
     {% endif %}
-        <div class="row">
-                <div class="forwards-container"></div>
-        </div>
+    </div>
+    <div class="row">
+        <div class="forwards-container"></div>
+    </div>
     <a href="/api/">API</a><br>
-
-
 </div>
 {% endblock %}

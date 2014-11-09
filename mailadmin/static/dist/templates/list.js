@@ -22,7 +22,9 @@ frame.set("loop.last", t_1 === t_2 - 1);
 frame.set("loop.length", t_2);
 output += "\n<div class=\"fwdlist col-md-12\">\n\t<div class=\"panel panel-default\">\n\t    <div class=\"panel-heading\">";
 output += runtime.suppressValue(t_4, env.autoesc);
-output += "</div>\n\t\t<table class=\"table\">\n\t\t\t<thead>\n\t\t        <tr>\n\t\t\t        <th>Medlem</th>\n\t\t\t        <th class=\"text-center\">Slett</th>\n\t\t        </tr>\n\t        </thead>\n\t        <tbody>\n\t\t\t";
+output += " <span class=\"badge\">";
+output += runtime.suppressValue(env.getFilter("length").call(context, t_5), env.autoesc);
+output += "</span></div>\n\t\t<table class=\"table table-striped table-condensed\">\n\t\t\t<thead>\n\t\t        <tr>\n\t\t\t        <th>Medlem</th>\n\t\t\t        <th class=\"text-center\">Slett</th>\n\t\t        </tr>\n\t        </thead>\n\t        <tbody>\n\t\t\t";
 frame = frame.push();
 var t_8 = t_5;
 if(t_8) {var t_7 = t_8.length;
@@ -47,7 +49,7 @@ output += "\"></td></tr>\n\t\t\t";
 }
 }
 frame = frame.pop();
-output += "\n\t\t\t\t<tr><td>\n\t\t\t\t<div class=\"input-group\"><input type=\"email\" name=\"\" class=\"form-control\"><span class=\"input-group-btn\"><button class=\"btn btn-default\" type=\"button\">Legg til</button></span></div>\n\t\t\t\t<td></td></tr>\n\t\t\t</tbody>\n\t\t</table>\n\t</div>\n</div>\n";
+output += "\n\t\t\t\t<tr><td colspan=\"2\">\n\t\t\t\t<div class=\"input-group\"><input type=\"email\" name=\"\" class=\"form-control\"><span class=\"input-group-btn\"><button class=\"btn btn-default\" type=\"button\">Legg til</button></span></div>\n\t\t\t\t</td></tr>\n\t\t\t</tbody>\n\t\t</table>\n\t</div>\n</div>\n";
 ;
 }
 } else {
@@ -67,7 +69,9 @@ frame.set("loop.last", t_1 === t_2 - 1);
 frame.set("loop.length", t_2);
 output += "\n<div class=\"fwdlist col-md-12\">\n\t<div class=\"panel panel-default\">\n\t    <div class=\"panel-heading\">";
 output += runtime.suppressValue(t_10, env.autoesc);
-output += "</div>\n\t\t<table class=\"table\">\n\t\t\t<thead>\n\t\t        <tr>\n\t\t\t        <th>Medlem</th>\n\t\t\t        <th class=\"text-center\">Slett</th>\n\t\t        </tr>\n\t        </thead>\n\t        <tbody>\n\t\t\t";
+output += " <span class=\"badge\">";
+output += runtime.suppressValue(env.getFilter("length").call(context, t_11), env.autoesc);
+output += "</span></div>\n\t\t<table class=\"table table-striped table-condensed\">\n\t\t\t<thead>\n\t\t        <tr>\n\t\t\t        <th>Medlem</th>\n\t\t\t        <th class=\"text-center\">Slett</th>\n\t\t        </tr>\n\t        </thead>\n\t        <tbody>\n\t\t\t";
 frame = frame.push();
 var t_14 = t_11;
 if(t_14) {var t_13 = t_14.length;
@@ -92,7 +96,7 @@ output += "\"></td></tr>\n\t\t\t";
 }
 }
 frame = frame.pop();
-output += "\n\t\t\t\t<tr><td>\n\t\t\t\t<div class=\"input-group\"><input type=\"email\" name=\"\" class=\"form-control\"><span class=\"input-group-btn\"><button class=\"btn btn-default\" type=\"button\">Legg til</button></span></div>\n\t\t\t\t<td></td></tr>\n\t\t\t</tbody>\n\t\t</table>\n\t</div>\n</div>\n";
+output += "\n\t\t\t\t<tr><td colspan=\"2\">\n\t\t\t\t<div class=\"input-group\"><input type=\"email\" name=\"\" class=\"form-control\"><span class=\"input-group-btn\"><button class=\"btn btn-default\" type=\"button\">Legg til</button></span></div>\n\t\t\t\t</td></tr>\n\t\t\t</tbody>\n\t\t</table>\n\t</div>\n</div>\n";
 ;
 }
 }
