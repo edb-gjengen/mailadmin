@@ -1,4 +1,10 @@
 {% extends "base.html" %}
+{% load bootstrap %}
 {% block "body" %}
-Hi, you should try the <a href="/api/">APIS</a>
+    {% if not user.is_authenticated %}
+        {{ form|bootstrap }}
+    {% else %}
+        <div class="greeting">Hei, {{ user.username }}</div>
+    {% endif %}
+    <div></div><a href="/api/">API</a></div>.
 {% endblock %}

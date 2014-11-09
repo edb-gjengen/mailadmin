@@ -36,9 +36,9 @@ class APITest(TestCase):
     @unittest.skip("Not now")
     def test_delforward(self):
         server = CPanel()
-        params = dict(
-            forwarder='test.testesen@studentersamfundet.no=nikolaik@gmail.com',
-        )
+        params = {
+            'arg-0': 'kak-lol@studentersamfundet.no=nikolaik@gmail.com',
+        }
         res = server.api('Email', 'delforward', params, version=1)
         # FIXME: Does not work!
         self.assertIsInstance(res, dict)

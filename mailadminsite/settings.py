@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'bootstrapform',
     'mailadmin',
 )
 
@@ -83,9 +84,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+LOGIN_REDIRECT_URL = '/'
+
 CP_API_URL = 'https://web.studentersamfundet.no:2083/json-api/cpanel'
 CP_API_USERNAME = "root"
 CP_API_PASSWORD = ""
+
+NEUF_EMAIL_DOMAIN = 'studentersamfundet.no'
 
 AUTHENTICATION_BACKENDS = (
     'mailadmin.backends.LDAPEmailBackend',
@@ -147,12 +152,12 @@ AUTH_LDAP_E_USER_ATTR_MAP = AUTH_LDAP_U_USER_ATTR_MAP
 AUTH_LDAP_E_PROFILE_ATTR_MAP = AUTH_LDAP_U_PROFILE_ATTR_MAP
 AUTH_LDAP_E_ALWAYS_UPDATE_USER = AUTH_LDAP_U_ALWAYS_UPDATE_USER
 
-# Debug logging
-import logging
-logger = logging.getLogger('django_auth_ldap')
-logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.DEBUG)
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
 
 # Local settings
 try:

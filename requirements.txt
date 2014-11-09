@@ -5,3 +5,4 @@ django-filter==0.8
 djangorestframework==2.4.4
 python-ldap==2.4.18
 requests==2.4.3
+django-bootstrap-form==3.1
