@@ -61,3 +61,17 @@ cn: edbadmin
 gidNumber: 3
 description: Group account
 memberUid: testesen
+
+dn: cn=dns-kak-styret,ou=Groups,dc=neuf,dc=no
+objectClass: posixGroup
+cn: dns-kak-styret
+gidNumber: 4
+description: Group account
+memberUid: testesen
+
+dn: cn=dns-kak,ou=Groups,dc=neuf,dc=no
+objectClass: posixGroup
+cn: dns-kak
+gidNumber: 4
+description: Group account
+memberUid: testesen

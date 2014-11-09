@@ -4,6 +4,7 @@ import re
 
 from mailadmin.serializers import ForwardSerializer
 
+
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
     Custom permission to only allow owners of an object to edit it.

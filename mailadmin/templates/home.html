@@ -1,10 +1,22 @@
 {% extends "base.html" %}
 {% load bootstrap %}
 {% block "body" %}
+<div class="container">
     {% if not user.is_authenticated %}
-        {{ form|bootstrap }}
+        <form method="post">
+            {{ form|bootstrap }}
+            {% csrf_token %}
+            <input type="submit" value="Logg inn">
+        </form>
     {% else %}
         <div class="greeting">Hei, {{ user.username }}</div>
+        <a href="{% url 'logout' %}">Logg ut</a>.
     {% endif %}
-    <div></div><a href="/api/">API</a></div>.
+        <div class="row">
+                <div class="forwards-container"></div>
+        </div>
+    <a href="/api/">API</a><br>
+
+
+</div>
 {% endblock %}

@@ -1,0 +1,23 @@
+{% for list,members in lists %}
+<div class="fwdlist col-md-12">
+	<div class="panel panel-default">
+	    <div class="panel-heading">{{ list }}</div>
+		<table class="table">
+			<thead>
+		        <tr>
+			        <th>Medlem</th>
+			        <th class="text-center">Slett</th>
+		        </tr>
+	        </thead>
+	        <tbody>
+			{% for member in members %}
+				<tr><td>{{ member.forward }}</td><td class="text-center"><input type="checkbox" name='fwd-delete' value="{{ member.uri_dest }}={{ member.uri_forward }}"></td></tr>
+			{% endfor %}
+				<tr><td>
+				<div class="input-group"><input type="email" name="" class="form-control"><span class="input-group-btn"><button class="btn btn-default" type="button">Legg til</button></span></div>
+				<td></td></tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+{% endfor %}

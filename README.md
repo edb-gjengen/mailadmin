@@ -5,7 +5,6 @@
     pip install -r requirements.txt
     # Create or modify local_settings.py
     python manage.py migrate
-    python manage.py runserver
 
 ## LDAP
     sudo docker pull osixia/openldap
@@ -13,3 +12,7 @@
     ldapadd -D "cn=admin,dc=neuf,dc=no" -w "toor" -f testdata.ldif
     # Verify import
     ldapsearch -x -b dc=neuf,dc=no
+    
+# Development
+    python manage.py runserver
+    # Log in with username 'test@example.com' and password 'test'
