@@ -114,6 +114,15 @@ class MyUserViewSet(viewsets.ReadOnlyModelViewSet):
         return User.objects.filter(pk=self.request.user.pk)
 
 
+class MyOrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = OrgUnit.objects.none()
+    serializer_class = OrgUnitSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return OrgUnit.objects.filter(admin_groups__in=self.request.user.groups.values('id'))
+
+
 class OrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = OrgUnit.objects.all()
     serializer_class = OrgUnitSerializer

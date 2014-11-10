@@ -1,0 +1,9 @@
+{% load bootstrap %}
+<div class="login-form">
+    <form method="post">
+        {{ form|bootstrap }}
+        {% csrf_token %}
+        <a href="https://brukerinfo.neuf.no/">Glemt brukernavn eller passord?</a><br>
+        <input type="submit" value="Logg inn" class="btn btn-primary btn-lg">
+    </form>
+</div>
