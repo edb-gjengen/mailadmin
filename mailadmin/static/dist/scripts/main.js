@@ -15,6 +15,14 @@ $(document).ready(function() {
             });
 
             $(".orgunit-list").append(ou_html);
+
+            /* Add listeners */
+            $(".orgunit-list a").on('click', function(e) {
+                e.preventDefault();
+                $(".orgunit-list li").removeClass('active');
+                $(this).parent().toggleClass('active');
+                // TODO: you are here
+            });
         });
         
         $.getJSON(api_urls.fwd_list, function(data) {

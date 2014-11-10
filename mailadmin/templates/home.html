@@ -4,6 +4,7 @@
 <div class="container">
     <div class="row">
         {% if not user.is_authenticated %}
+            <div class="col-md-12"><p>Her kan du administrere epostlistene på <a href="https://studentersamfundet.no">Det Norske Studentersamfund</a>.<br>Logg inn med din DNS-konto under.</p></div>
             {% include "login_form.html" %}
         {% else %}
         <div class="row">
@@ -18,12 +19,5 @@
         </div>
         {% endif %}
     </div>
-</div>
-
-    <footer class="footer">
-        <div class="container">
-            <a href="https://edb.neuf.no">EDB-gjengen</a>
-        </div>
-    </footer>
 </div>
 {% endblock %}
