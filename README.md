@@ -1,5 +1,5 @@
 # Installation
-    apt-get install libldap2-dev python-dev libsasl2-dev libssl-dev ldap-utils
+    apt-get install libldap2-dev python-dev libsasl2-dev libssl-dev ldap-utils libffi-dev
     virtualenv venv
     . venv/bin/activate
     pip install -r requirements.txt
