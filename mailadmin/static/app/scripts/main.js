@@ -74,6 +74,13 @@
                     }
                     $('.new-list .panel-heading').text(new_list_name);
                 });
+                /* Prefix select */
+                $('.new-list .prefix-select a').on('click', function() {
+                    $('.new-list .prefix-select a').parent().removeClass('active');
+                    $(this).parent().addClass('active');
+                    var prefix = $(this).parent().attr('data-value');
+                    $('.new-list .prefix-btn').html(prefix+' <span class="caret"></span>');
+                });
                 $('.new-list textarea').on('keyup', function(e) {
                     var text = $(this).val();
                     var emails = parseEmails(text);

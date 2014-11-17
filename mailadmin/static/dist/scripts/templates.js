@@ -165,9 +165,9 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<div class=\"panel panel-default\">\n  <div class=\"panel-heading\">Ny liste</div>\n  <div class=\"panel-body\">\n  \t<div class=\"input-group\">\n\t\t<span class=\"input-group-btn\">\n\t\t\t<button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">";
+output += "<div class=\"panel panel-default\">\n  <div class=\"panel-heading\">Ny liste</div>\n  <div class=\"panel-body\">\n  \t<div class=\"input-group\">\n\t\t<span class=\"input-group-btn\">\n\t\t\t<button type=\"button\" class=\"btn btn-default prefix-btn dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">";
 output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "orgunits")),0, env.autoesc)),"prefix", env.autoesc), env.autoesc);
-output += " <span class=\"caret\"></span></button>\n\t\t\t<ul class=\"dropdown-menu prefix-select\">\n\t\t\t";
+output += "- <span class=\"caret\"></span></button>\n\t\t\t<ul class=\"dropdown-menu prefix-select\">\n\t\t\t";
 frame = frame.push();
 var t_3 = runtime.contextOrFrameLookup(context, frame, "orgunits");
 if(t_3) {var t_2 = t_3.length;
@@ -186,7 +186,7 @@ if(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "loop")),"
 output += " class=\"active\"";
 ;
 }
-output += "data-value=\"";
+output += " data-value=\"";
 output += runtime.suppressValue(runtime.memberLookup((t_4),"prefix", env.autoesc), env.autoesc);
 output += "-\"><a href=\"#\">";
 output += runtime.suppressValue(runtime.memberLookup((t_4),"prefix", env.autoesc), env.autoesc);

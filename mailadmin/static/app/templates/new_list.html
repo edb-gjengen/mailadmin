@@ -3,7 +3,7 @@
   <div class="panel-body">
   	<div class="input-group">
 		<span class="input-group-btn">
-			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{orgunits[0].prefix}} <span class="caret"></span></button>
+			<button type="button" class="btn btn-default prefix-btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{orgunits[0].prefix}}- <span class="caret"></span></button>
 			<ul class="dropdown-menu prefix-select">
 			{% for ou in orgunits %}
 				<li{% if loop.first %} class="active"{% endif %} data-value="{{ ou.prefix }}-"><a href="#">{{ou.prefix}}-</a></li>

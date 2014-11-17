@@ -12,13 +12,12 @@
         if(text === undefined || text === "") {
             return [];
         }
-        /* Get each word from the text, split by spaces, end line, semicolon, quotes, commas, colons, parens,
-           and brackets. 
-        */
+        /* Get each word from the text, split by spaces, end line, semicolon,
+            quotes, commas, colons, parens and brackets. */
         var words = text.split(/[\s\n;"',;:()<>[\]\\]+/),
             emails = [],
             distinct_emails;
-        
+
         // Regex for identifying an email address.
         var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -30,9 +29,9 @@
             return el.toLowerCase();
         });
 
-        return _.unique(emails); 
+        return _.unique(emails);
     }
-    function render_alert(msg, cssClass) {
+    function renderAlert(msg, cssClass) {
         return nunjucks.render('alert.html', {'msg': msg, 'cssClass': cssClass});
     }
 
@@ -75,6 +74,13 @@
                     }
                     $('.new-list .panel-heading').text(new_list_name);
                 });
+                /* Prefix select */
+                $('.new-list .prefix-select a').on('click', function() {
+                    $('.new-list .prefix-select a').parent().removeClass('active');
+                    $(this).parent().addClass('active');
+                    var prefix = $(this).parent().attr('data-value');
+                    $('.new-list .prefix-btn').html(prefix+' <span class="caret"></span>');
+                });
                 $('.new-list textarea').on('keyup', function(e) {
                     var text = $(this).val();
                     var emails = parseEmails(text);
@@ -91,13 +97,13 @@
                     /* Validate */
                     var new_list_name = $('.new-list .js-new-list-name').val();
                     if(new_list_name.length === 0) {
-                        $('.new-list-result').html(render_alert('Navn på epostliste mangler', 'danger'));
+                        $('.new-list-result').html(renderAlert('Navn på epostliste mangler', 'danger'));
                         return;
                     }
                     var text = $('.new-list textarea').val();
                     var emails = parseEmails(text);
                     if(emails.length === 0) {
-                        $('.new-list-result').html(render_alert('Ingen eposter i epost-feltet...', 'danger'));
+                        $('.new-list-result').html(renderAlert('Ingen eposter i epost-feltet...', 'danger'));
                         return;
                     }
                     // Valid form
@@ -108,7 +114,7 @@
                     new_list[dest] = _.map(emails, function(el) {
                         return {'dest': dest, 'forward': el};
                     });
-                    
+
                     var deferreds = [];
                     $.each(new_list[dest], function(i, el) {
                         el.csrfmiddlewaretoken = csrf_token;
@@ -116,11 +122,11 @@
                     });
                     $.when.apply($, deferreds).then(function(){
                         // Success
-                        $('.new-list-result').html(render_alert('Lagt til ny liste: ' + dest, 'success'));
+                        $('.new-list-result').html(renderAlert('Lagt til ny liste: ' + dest, 'success'));
                         $('.new-list textarea').val('');
                         $('.new-list .js-new-list-name').val('');
                     }).fail(function(err){
-                        $('.new-list-result').html(render_alert('Kunne ikke opprette ny liste \'' + dest +'\': '+ err, 'danger'));
+                        $('.new-list-result').html(renderAlert('Kunne ikke opprette ny liste \'' + dest +'\': '+ err, 'danger'));
                     });
                     var added_list_html = nunjucks.render('list.html', {
                         lists: new_list,
@@ -211,7 +217,7 @@
                         checked.closest('tr').remove();
                         // TODO remove list if no more rows
                     }).fail(function(err){
-                        $('[data-list-name="'+list_name+'"] .result-alert').html(render_alert('Kunne ikke fjerne epostaliaser', 'danger'));
+                        $('[data-list-name="'+list_name+'"] .result-alert').html(renderAlert('Kunne ikke fjerne epostaliaser', 'danger'));
                     });
                 }
                 /* Add new */
