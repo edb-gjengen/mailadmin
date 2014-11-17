@@ -60,7 +60,10 @@ class ForwardsViewSet(viewsets.ViewSet):
             my_groups = request.user.groups.filter(pk__in=group_filter)
 
         # Look for mailinglist prefixes
-        my_prefixes = OrgUnit.objects.filter(admin_groups__in=my_groups).distinct().values_list('prefix', flat=True)
+        if request.user.is_superuser:
+            my_prefixes = OrgUnit.objects.all().distinct().values_list('prefix', flat=True)
+        else:
+            my_prefixes = OrgUnit.objects.filter(admin_groups__in=my_groups).distinct().values_list('prefix', flat=True)
         # Prepare regular expression
         regexp = '|'.join(['{0}-'.format(p) for p in my_prefixes])
 
@@ -99,6 +102,7 @@ class ForwardCreateView(views.APIView):
 
 class ForwardDeleteView(views.APIView):
     _cp = CPanel()
+    permission_classes = (DestinationPrefixOwner,)
 
     def delete(self, request, forwarder=None):
         invalid_forwarder = {'error': 'Invalid forwarder: {0}'.format(forwarder)}
