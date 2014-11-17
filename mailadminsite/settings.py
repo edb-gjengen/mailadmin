@@ -84,7 +84,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/lists/'
 
 CP_API_URL = 'https://web.studentersamfundet.no:2083/json-api/cpanel'
 CP_API_USERNAME = "root"

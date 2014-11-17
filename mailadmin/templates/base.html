@@ -3,6 +3,7 @@
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="x-csrf-token" content="{{ csrf_token }}">
     <title>{% block "title" %}lister.neuf.no - Epostlister på Det Norske Studentersamfund{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'dist/styles/main.css' %}" type="text/css">
     <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.js' %}"></script>
@@ -11,7 +12,6 @@
 </head>
 <body class="{% block "body-css-classes" %}{% endblock %}">
 	{% include "nav.html" %}
-	{% block "navigation" %}{% endblock %}
 
 	{% block "body" %}{% endblock %}
     <footer class="footer">
@@ -22,6 +22,7 @@
     </footer>
     <script type="text/javascript" src="{% static 'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/alert.js' %}"></script>
     <script type="text/javascript" src="{% static 'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/dropdown.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js' %}"></script>
     <script type="text/javascript" src="{% static 'dist/scripts/templates.js' %}"></script>
     <script type="text/javascript" src="{% static 'dist/scripts/main.js' %}"></script>
 </body>

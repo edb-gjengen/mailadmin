@@ -306,8 +306,8 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url("bootstrap/glyphicons-halflings-regular.eot");
-  src: url("bootstrap/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("bootstrap/glyphicons-halflings-regular.woff") format("woff"), url("bootstrap/glyphicons-halflings-regular.ttf") format("truetype"), url("bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg");
+  src: url("../fonts/glyphicons-halflings-regular.eot");
+  src: url("../fonts/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/glyphicons-halflings-regular.woff") format("woff"), url("../fonts/glyphicons-halflings-regular.ttf") format("truetype"), url("../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg");
 }
 .glyphicon {
   position: relative;
@@ -6517,7 +6517,7 @@ button.close {
 }
 .login-form {
   margin: 0 auto;
-  max-width: 400px;
+  max-width: 300px;
   float: none;
 }
 .login-form input[type=submit] {
@@ -6561,4 +6561,66 @@ body {
   height: 100px;
   background-color: #f5f5f5;
   padding-top: 20px;
+}
+
+/* Lists */
+.del-header {
+  text-align: center;
+  width: 82px;
+}
+
+.del-cell {
+  padding: 0 !important;
+}
+
+.del-label {
+  display: block;
+  height: 30px;
+  margin: 0;
+  text-align: center;
+}
+.del-label input {
+  margin: 0;
+  position: relative;
+  top: 6px;
+}
+
+.btn-del {
+  display: none;
+}
+.btn-del.visible {
+  display: block;
+}
+
+.forwards-container table > thead > tr > th:first-child,
+.forwards-container table > tbody > tr > td:first-child {
+  padding-left: 16px;
+}
+
+.forwards-container .badge {
+  float: right;
+  margin-right: 14px;
+}
+
+.new-list-btn {
+  margin-bottom: 20px;
+}
+
+.new-list {
+  display: none;
+}
+.new-list.visible {
+  display: block;
+}
+
+.btn-add-list {
+  float: right;
+  margin-top: 10px;
+}
+
+/* Responsive fixes */
+@media (max-width: 767px) {
+  td {
+    font-size: 13px;
+  }
 }

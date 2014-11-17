@@ -72,6 +72,20 @@ memberUid: testesen
 dn: cn=dns-kak,ou=Groups,dc=neuf,dc=no
 objectClass: posixGroup
 cn: dns-kak
-gidNumber: 4
+gidNumber: 5
+description: Group account
+memberUid: testesen
+
+dn: cn=dns-konsertbetong,ou=Groups,dc=neuf,dc=no
+objectClass: posixGroup
+cn: dns-konsertbetong
+gidNumber: 6
+description: Group account
+memberUid: testesen
+
+dn: cn=dns-konsertbetong-styret,ou=Groups,dc=neuf,dc=no
+objectClass: posixGroup
+cn: dns-konsertbetong-styret
+gidNumber: 7
 description: Group account
 memberUid: testesen

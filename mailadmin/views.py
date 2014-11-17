@@ -1,8 +1,9 @@
 from django.conf import settings
-from django.contrib.auth import login
+from django.contrib.auth import login, logout as auth_logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework import viewsets, views
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -13,18 +14,30 @@ from mailadmin.serializers import UserSerializer, OrgUnitSerializer, ForwardSeri
 from mailadmin.permissions import DestinationPrefixOwner
 
 
-def home(request):
+def index(request):
     form = {}
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             # Log the user in.
             login(request, form.get_user())
+            return redirect('home')
     else:
-        if not request.user.is_authenticated():
+        if request.user.is_authenticated():
+            return redirect('home')
+        else:
             form = AuthenticationForm(request)
 
-    return render(request, "home.html", {'form': form})
+    return render(request, "index.html", {'form': form})
+
+@login_required
+def home(request):
+    return render(request, "home.html")
+
+
+def logout(request):
+    auth_logout(request)
+    return redirect('index')
 
 
 class ForwardsViewSet(viewsets.ViewSet):

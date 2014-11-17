@@ -1,23 +1,20 @@
 {% extends "base.html" %}
-{% block "body-css-classes" %}{% if user.is_authenticated %}home{% else %}login{% endif %}{% endblock %}
+{% block "body-css-classes" %}home{% endblock %}
 {% block "body" %}
 <div class="container">
     <div class="row">
-        {% if not user.is_authenticated %}
-            <div class="col-md-12"><p>Her kan du administrere epostlistene på <a href="https://studentersamfundet.no">Det Norske Studentersamfund</a>.<br>Logg inn med din DNS-konto under.</p></div>
-            {% include "login_form.html" %}
-        {% else %}
-        <div class="row">
-            <div class="col-sm-4 sidebar">
-                <ul class="nav nav-sidebar orgunit-list">
-                    <li class="active"><a href="/">Alle</a></li>
-                </ul>
-            </div>
-            <div class="col-sm-8">
-                <div class="forwards-container"></div>
-            </div>
+        <div class="col-sm-4 sidebar">
+            <ul class="nav nav-sidebar orgunit-list">
+                <li class="active"><a href="/lists/" data-prefix=".+">Alle</a></li>
+            </ul>
         </div>
-        {% endif %}
+        <div class="col-sm-8">
+            <div class="new-list-container">
+                <button type="button" class="btn btn-default new-list-btn"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Opprett ny liste</button>
+                <div class="new-list"></div><div class="new-list-result"></div>
+            </div>
+            <div class="forwards-container"></div>
+        </div>
     </div>
 </div>
 {% endblock %}
