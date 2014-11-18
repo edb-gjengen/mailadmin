@@ -21,12 +21,16 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 
 class DestinationPrefixOwner(permissions.BasePermission):
+    # Ref: http://www.django-rest-framework.org/api-guide/permissions
+    # TODO have no idea if this works
     def has_permission(self, request, view):
         # TODO test handling the DELETE requests
         if request.user.is_superuser:
             return True
 
         if request.method == 'DELETE':
+            print view
+            print view.kwargs
             forwarder = view.kwargs['forwarder']  # TODO you are here
             invalid_forwarder = {'error': 'Invalid forwarder: {0}'.format(forwarder)}
             if '=' not in forwarder:
@@ -42,7 +46,7 @@ class DestinationPrefixOwner(permissions.BasePermission):
 
         my_groups = request.user.groups.all()
         # Look for mailinglist prefixes
-        my_prefixes = OrgUnit.objects.filter(admin_groups__in=my_groups).distinct().values_list('prefix', flat=True)
+        my_prefixes = OrgUnit.objects.filter(admin_groups__in=my_groups).distinct().exclude(prefix__isnull=True, is_active=True).values_list('prefix', flat=True)
         if len(my_prefixes) == 0:
             return False
         # Prepare regular expression

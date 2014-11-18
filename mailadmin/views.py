@@ -61,9 +61,9 @@ class ForwardsViewSet(viewsets.ViewSet):
 
         # Look for mailinglist prefixes
         if request.user.is_superuser:
-            my_prefixes = OrgUnit.objects.all().distinct().values_list('prefix', flat=True)
+            my_prefixes = OrgUnit.objects.exclude(prefix__isnull=True, is_active=True).distinct().values_list('prefix', flat=True)
         else:
-            my_prefixes = OrgUnit.objects.filter(admin_groups__in=my_groups).distinct().values_list('prefix', flat=True)
+            my_prefixes = OrgUnit.objects.filter(admin_groups__in=my_groups).distinct().exclude(prefix__isnull=True, is_active=True).values_list('prefix', flat=True)
         # Prepare regular expression
         regexp = '|'.join(['{0}-'.format(p) for p in my_prefixes])
 
@@ -137,7 +137,10 @@ class MyOrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return OrgUnit.objects.filter(admin_groups__in=self.request.user.groups.values('id'))
+        if self.request.user.is_superuser:
+            return OrgUnit.objects.exclude(prefix__isnull=True, is_active=True).distinct()
+
+        return OrgUnit.objects.filter(admin_groups__in=self.request.user.groups.values('id')).exclude(prefix__isnull=True, is_active=True).distinct()
 
 
 class OrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
