@@ -16,8 +16,3 @@
 # Development
     python manage.py runserver
     # Log in with username 'test@example.com' and password 'test'
-    
-# TODO
- - new list button with form
- - ajax spinner (sircon is slow)
- - wire up rest of interface.
