@@ -31,8 +31,8 @@
 
         return _.unique(emails);
     }
-    function renderAlert(msg, cssClass) {
-        return nunjucks.render('alert.html', {'msg': msg, 'cssClass': cssClass});
+    function renderAlert(msg, alertClass, iconClass) {
+        return nunjucks.render('alert.html', {'msg': msg, 'alertClass': alertClass, 'iconClass': iconClass});
     }
 
 
@@ -72,7 +72,7 @@
                         var prefix = $('.new-list .prefix-select .active').attr('data-value');
                         new_list_name = 'NY: ' + prefix + new_list_name + "@studentersamfundet.no";
                     }
-                    $('.new-list .panel-heading').text(new_list_name);
+                    $('.js-new-list-preview').text(new_list_name);
                 });
                 /* Prefix select */
                 $('.new-list .prefix-select a').on('click', function() {
@@ -190,9 +190,9 @@
                     var tbody = target.closest('tbody');
                     var num_selected = tbody.find("[name=fwd-delete]:checked").length;
                     if(num_selected > 0) {
-                        tbody.find('.btn-del').addClass('visible');
+                        tbody.find('.link-del').addClass('visible');
                     } else {
-                        tbody.find('.btn-del').removeClass('visible');
+                        tbody.find('.link-del').removeClass('visible');
                     }
                 }
                 /* Delete selected */
@@ -220,16 +220,17 @@
                         $('[data-list-name="'+list_name+'"] .result-alert').html(renderAlert('Kunne ikke fjerne epostaliaser', 'danger'));
                     });
                 }
+                else if( target.hasClass('js-toggle-email-textarea')) {
+                    e.preventDefault();
+                    var row = target.closest('tbody').find('.textarea-row');
+                    row.toggleClass('visible');
+                }
                 /* Add new */
                 else if( target.hasClass('js-new-email') ) {
-                    // TODO not working
-                    var email_field = target.parent().parent().find('[name=new-email]');
-                    console.log(email_field);
-                    if(email_field.get(0).checkValidity() === false) {
-                        return true;
-                    }
                     e.preventDefault();
-                    console.log(email_field.val());
+                    // TODO refactor logic from new list and add here
+                } else {
+                    //console.log(target);
                 }
             });
             /* New list toggle display */

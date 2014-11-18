@@ -6534,6 +6534,10 @@ button.close {
   }
 }
 
+.orgunit-list {
+  margin-bottom: 40px;
+}
+
 /* Sidebar navigation */
 .nav-sidebar > .active > a,
 .nav-sidebar > .active > a:hover,
@@ -6543,33 +6547,14 @@ button.close {
 }
 
 /* Sticky footer styles */
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 100px;
-}
-
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 100px;
-  background-color: #f5f5f5;
-  padding-top: 20px;
+  margin-top: 40px;
 }
 
 /* Lists */
-.del-header {
+.del-cell {
   text-align: center;
   width: 82px;
-}
-
-.del-cell {
   padding: 0 !important;
 }
 
@@ -6585,16 +6570,9 @@ body {
   top: 6px;
 }
 
-.btn-del {
-  display: none;
-}
-.btn-del.visible {
-  display: block;
-}
-
-.forwards-container table > thead > tr > th:first-child,
 .forwards-container table > tbody > tr > td:first-child {
   padding-left: 16px;
+  padding-right: 16px;
 }
 
 .forwards-container .badge {
@@ -6618,9 +6596,84 @@ body {
   margin-top: 10px;
 }
 
+/* Forward list */
+.panel-heading {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.icon-faded {
+  font-size: 14px;
+  color: #ccc;
+  margin-right: 4px;
+  top: 2px;
+}
+
+.forwards-container table > tbody > tr.action-row > td:first-child,
+.table-condensed > tbody > tr.action-row > td {
+  padding: 0;
+}
+
+.fwdlist tr:nth-child(even) > td {
+  background-color: #f5f5f5;
+}
+
+.action-row .link-add {
+  display: block;
+}
+.action-row .link-del {
+  display: none;
+}
+.action-row .link-del.visible {
+  display: block;
+}
+.action-row a {
+  padding: 10px;
+  padding-left: 16px;
+}
+.action-row a:hover {
+  background-color: #f5f5f5;
+}
+.action-row textarea {
+  margin-bottom: 8px;
+}
+
+.textarea-row {
+  display: none;
+}
+.textarea-row td {
+  padding-right: 16px;
+}
+.textarea-row.visible {
+  display: table-row;
+}
+.textarea-row .btn-add-list {
+  margin-bottom: 10px;
+}
+
 /* Responsive fixes */
-@media (max-width: 767px) {
+@media (max-width: 500px) {
+  .panel-heading {
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  .panel-heading .icon-faded {
+    display: none;
+  }
+
   td {
     font-size: 13px;
   }
+}
+.love {
+  color: #faafba;
+}
+
+.credits {
+  margin-top: 25px;
+  margin-bottom: 25px;
+  text-align: center;
+  color: #666;
+  font-size: 12px;
 }
