@@ -46,7 +46,7 @@ class DestinationPrefixOwner(permissions.BasePermission):
 
         my_groups = request.user.groups.all()
         # Look for mailinglist prefixes
-        my_prefixes = OrgUnit.objects.filter(admin_groups__in=my_groups).distinct().exclude(prefix__isnull=True, is_active=True).values_list('prefix', flat=True)
+        my_prefixes = OrgUnit.objects.filter(admin_groups__in=my_groups).distinct().exclude(prefix__isnull=True).exclude(is_active=False).values_list('prefix', flat=True)
         if len(my_prefixes) == 0:
             return False
         # Prepare regular expression
