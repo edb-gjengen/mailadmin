@@ -6515,6 +6515,32 @@ button.close {
     display: none !important;
   }
 }
+.spin {
+  -webkit-animation: spin .8s infinite linear;
+  animation: spin .8s infinite linear;
+}
+
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
 .login-form {
   margin: 0 auto;
   max-width: 300px;
@@ -6536,6 +6562,16 @@ button.close {
 
 .orgunit-list {
   margin-bottom: 40px;
+}
+
+.orgunit-select-container {
+  display: block;
+  margin-bottom: 20px;
+}
+@media (min-width: 768px) {
+  .orgunit-select-container {
+    display: none;
+  }
 }
 
 /* Sidebar navigation */

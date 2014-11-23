@@ -1,6 +1,7 @@
 $icon-font-path: "../fonts/";
 
 @import "../../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap";
+@import "animations";
 
 .login-form {
 	margin: 0 auto;
@@ -20,6 +21,14 @@ $icon-font-path: "../fonts/";
 }
 .orgunit-list {
 	margin-bottom: 40px;
+}
+.orgunit-select-container {
+    display: block;
+    margin-bottom: 20px;
+
+	@media (min-width: 768px) {
+    	display: none;
+	}
 }
 
 /* Sidebar navigation */

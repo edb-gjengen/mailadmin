@@ -50,12 +50,11 @@
         /* Home view (lists) */
         if( $('body.home').length ) {
             $.getJSON(api_urls.ou_list, function(data) {
-                var ou_html = nunjucks.render('orgunits.html', {
-                    orgunits: data,
-                    api_urls: api_urls
-                });
-
+                /* orgunit list */
+                var ou_html = nunjucks.render('orgunits.html', { orgunits: data });
                 $(".orgunit-list").append(ou_html);
+                var ous_html = nunjucks.render('orgunits_select.html', { orgunits: data });
+                $(".orgunit-select-container").html(ous_html);
 
                 /* New list */
                 var new_list_html = nunjucks.render('new_list.html', {
@@ -135,7 +134,7 @@
 
                 });
 
-                /* Add list filter listeners */
+                /* Add list filter by orgunit */
                 $(".orgunit-list a").on('click', function(e) {
                     var prefix = $(this).attr('data-prefix');
                     var querystring = $(this).attr('href');
@@ -144,6 +143,29 @@
                     /* Toggle selection */
                     $(".orgunit-list li").removeClass('active');
                     $(this).parent().toggleClass('active');
+                    $('.orgunits-select').val(prefix);
+
+                    /* Update query string */
+                    window.history.pushState(null, null, querystring);
+
+                    /* Filter lists */
+                    var re_prefix = new RegExp('^'+prefix);
+                    $(".fwdlist").each(function(el) {
+                        var cur_name = $(this).attr('data-list-name');
+                        if(re_prefix.test(cur_name)) {
+                            $(this).removeClass('hidden');
+                        } else {
+                            $(this).addClass('hidden');
+                        }
+                    });
+                });
+                $(".orgunits-select").on('change', function(e) {
+                    var prefix = $(this).val();
+                    var querystring = '/lists/?q='+prefix;
+
+                    /* Toggle selection */
+                    $(".orgunit-list li").removeClass('active');
+                    $(".orgunit-list li a[data-prefix="+prefix+"]").parent().toggleClass('active');
 
                     /* Update query string */
                     window.history.pushState(null, null, querystring);
@@ -161,10 +183,14 @@
                 });
             });
 
-            /* Load lists */
+            /* Load forwards from API and write to container */
             $.getJSON(api_urls.fwd_list, function(data) {
                 if( !data.cpanelresult ) {
-                    $(".forwards-container").html("No results.");
+                    $(".forwards-container").html(renderAlert("No results.", 'info'));
+                    return;
+                }
+                if( 'error' in data.cpanelresult ) {
+                    $(".forwards-container").html(renderAlert("Klarte ikke hente epostlister fra APIet: "+data.cpanelresult.error, 'danger'));
                     return;
                 }
 
@@ -176,62 +202,54 @@
                 });
 
                 $(".forwards-container").html(fw_html);
-
-                /* Toggle delete state */
-                $("input[name=fwd-delete]").click(function() {
-                    $(this).parent().parent().parent().toggleClass('danger');
-                });
             });
 
-            $(".forwards-container").on('click', function(e) {
-                /* Add to delete selection */
-                var target = $(e.target);
-                if( target.attr('name') == 'fwd-delete' ) {
-                    var tbody = target.closest('tbody');
-                    var num_selected = tbody.find("[name=fwd-delete]:checked").length;
-                    if(num_selected > 0) {
-                        tbody.find('.link-del').addClass('visible');
-                    } else {
-                        tbody.find('.link-del').removeClass('visible');
-                    }
-                }
-                /* Delete selected */
-                else if( target.hasClass('js-del-selected') ) {
-                    var list_name = target.attr('data-delete-list-name');
-                    var checked = $('[data-list-name="'+list_name+'"] [name="fwd-delete"]:checked');
-                    var delete_these = _.map(checked, function(el) {
-                        return $(el).val();
-                    });
-                    var deferreds = [];
-                    $.each(delete_these, function(i, el) {
-                        var data = {
-                            type: 'DELETE',
-                            headers: {'X-CSRFToken': csrf_token},
-                            url: api_urls.fwd_delete + el + '/',
-                            dataType: 'json'
-                        };
-                        deferreds.push($.ajax(data));
-                    });
-                    $.when.apply($, deferreds).then(function(){
-                        // Success
-                        checked.closest('tr').remove();
-                        // TODO remove list if no more rows
-                    }).fail(function(err){
-                        $('[data-list-name="'+list_name+'"] .result-alert').html(renderAlert('Kunne ikke fjerne epostaliaser', 'danger'));
-                    });
-                }
-                else if( target.hasClass('js-toggle-email-textarea')) {
-                    e.preventDefault();
-                    var row = target.closest('tbody').find('.textarea-row');
-                    row.toggleClass('visible');
-                }
-                /* Add new */
-                else if( target.hasClass('js-new-email') ) {
-                    e.preventDefault();
-                    // TODO refactor logic from new list and add here
+            /* Mark row red for deletion and show delete button if applicable */
+            $(".forwards-container").on('click', '[name=fwd-delete]', function(e) {
+                $(this).parent().parent().parent().toggleClass('danger');
+                var tbody = $(this).closest('tbody');
+                var num_selected = tbody.find("[name=fwd-delete]:checked").length;
+                if(num_selected > 0) {
+                    tbody.find('.link-del').addClass('visible');
                 } else {
-                    //console.log(target);
+                    tbody.find('.link-del').removeClass('visible');
                 }
+            });
+            /* Delete selected */
+            $(".forwards-container").on('click', '.js-del-selected', function(e) {
+                $(this).attr('data-delete-list-name');
+                var checked = $('[data-list-name="'+list_name+'"] [name="fwd-delete"]:checked');
+                var delete_these = _.map(checked, function(el) {
+                    return $(el).val();
+                });
+                var deferreds = [];
+                $.each(delete_these, function(i, el) {
+                    var data = {
+                        type: 'DELETE',
+                        headers: {'X-CSRFToken': csrf_token},
+                        url: api_urls.fwd_delete + el + '/',
+                        dataType: 'json'
+                    };
+                    deferreds.push($.ajax(data));
+                });
+                $.when.apply($, deferreds).then(function(){
+                    // Success
+                    checked.closest('tr').remove();
+                    // TODO remove list if no more rows
+                }).fail(function(err){
+                    $('[data-list-name="'+list_name+'"] .result-alert').html(renderAlert('Kunne ikke fjerne epostaliaser', 'danger'));
+                });
+            });
+            /* Toggles emails textarea */
+            $(".forwards-container").on('click', '.js-toggle-email-textarea', function(e) {
+                e.preventDefault();
+                var row = $(this).closest('tbody').find('.textarea-row');
+                row.toggleClass('visible');
+            });
+            /* Add emails to current list */
+            $(".forwards-container").on('click', '.js-new-email', function(e) {
+                e.preventDefault();
+                // TODO refactor logic from new list and add here
             });
             /* New list toggle display */
             $('.new-list-btn').on('click', function() {
