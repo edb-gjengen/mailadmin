@@ -114,19 +114,11 @@
                         return {'dest': dest, 'forward': el};
                     });
 
-                    var deferreds = [];
-                    $.each(new_list[dest], function(i, el) {
-                        el.csrfmiddlewaretoken = csrf_token;
-                        deferreds.push($.post(api_urls.fwd_create, el, function() {}, 'json'));
-                    });
-                    $.when.apply($, deferreds).then(function(){
-                        // Success
+                    $.post(api_urls.fwd_create, new_list[dest], function() {
                         $('.new-list-result').html(renderAlert('Lagt til ny liste: ' + dest, 'success'));
                         $('.new-list textarea').val('');
                         $('.new-list .js-new-list-name').val('');
-                    }).fail(function(err){
-                        $('.new-list-result').html(renderAlert('Kunne ikke opprette ny liste \'' + dest +'\': '+ err, 'danger'));
-                    });
+                    }, 'json'));
                     var added_list_html = nunjucks.render('list.html', {
                         lists: new_list,
                     });
@@ -222,22 +214,17 @@
                 var delete_these = _.map(checked, function(el) {
                     return $(el).val();
                 });
-                var deferreds = [];
-                $.each(delete_these, function(i, el) {
-                    var data = {
-                        type: 'DELETE',
-                        headers: {'X-CSRFToken': csrf_token},
-                        url: api_urls.fwd_delete + el + '/',
-                        dataType: 'json'
-                    };
-                    deferreds.push($.ajax(data));
-                });
-                $.when.apply($, deferreds).then(function(){
+                var data = {
+                    type: 'DELETE',
+                    headers: {'X-CSRFToken': csrf_token},
+                    url: api_urls.fwd_delete,
+                    data: delete_these,
+                    dataType: 'json'
+                };
+                $.ajax(data, function(){
                     // Success
                     checked.closest('tr').remove();
                     // TODO remove list if no more rows
-                }).fail(function(err){
-                    $('[data-list-name="'+list_name+'"] .result-alert').html(renderAlert('Kunne ikke fjerne epostaliaser', 'danger'));
                 });
             });
             /* Toggles emails textarea */
