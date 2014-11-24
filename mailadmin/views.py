@@ -67,8 +67,7 @@ class ForwardsViewSet(viewsets.ViewSet):
 
         my_prefixes = orgunits.values_list('prefix', flat=True)
         # Prepare regular expression
-        regexp = '|'.join(['{0}-'.format(p) for p in my_prefixes])
-
+        regexp = '|'.join(['^{0}-'.format(p) for p in my_prefixes])
         if len(my_prefixes) == 0:
             return Response({'result': 'No results'})  # Need at least one
 

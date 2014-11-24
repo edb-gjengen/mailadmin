@@ -50,6 +50,6 @@ class DestinationPrefixOwner(permissions.BasePermission):
         if len(my_prefixes) == 0:
             return False
         # Prepare regular expression
-        regexp = '|'.join(['{0}-'.format(p) for p in my_prefixes])
+        regexp = '|'.join(['^{0}-'.format(p) for p in my_prefixes])
         # The destination should have at least one match with the prefix regexp
         return re.search(regexp, fw.data['dest']) is not None
