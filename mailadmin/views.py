@@ -30,6 +30,7 @@ def index(request):
 
     return render(request, "index.html", {'form': form})
 
+
 @login_required
 def home(request):
     return render(request, "home.html")
@@ -60,10 +61,11 @@ class ForwardsViewSet(viewsets.ViewSet):
             my_groups = request.user.groups.filter(pk__in=group_filter)
 
         # Look for mailinglist prefixes
-        if request.user.is_superuser:
-            my_prefixes = OrgUnit.objects.exclude(prefix__isnull=True).exclude(is_active=False).distinct().values_list('prefix', flat=True)
-        else:
-            my_prefixes = OrgUnit.objects.filter(admin_groups__in=my_groups).distinct().exclude(prefix__isnull=True).exclude(is_active=False).values_list('prefix', flat=True)
+        orgunits = OrgUnit.objects.exclude(prefix__isnull=True).exclude(is_active=False).distinct()
+        if not request.user.is_superuser:
+            orgunits = orgunits.filter(admin_groups__in=my_groups)
+
+        my_prefixes = orgunits.values_list('prefix', flat=True)
         # Prepare regular expression
         regexp = '|'.join(['{0}-'.format(p) for p in my_prefixes])
 
@@ -96,7 +98,9 @@ class ForwardCreateView(views.APIView):
             fwdopt='fwd',
             fwdemail=fw.data['forward']
         )
-        res = self._cp.api('Email', 'addforward', params)
+        # FIXME: unreliable
+        # res = self._cp.api('Email', 'addforward', params)
+        res = {'errors': 'Not implemented'}
         return Response(res)
 
 
@@ -118,7 +122,9 @@ class ForwardDeleteView(views.APIView):
         params = {
             'arg-0': '{0}={1}'.format(fw.data['dest'], fw.data['forward'])
         }
-        res = self._cp.api('Email', 'delforward', params, version=1)
+        # FIXME: unreliable
+        # res = self._cp.api('Email', 'delforward', params, version=1)
+        res = {'errors': 'Not implemented'}
         return Response(res)
 
 
@@ -137,10 +143,12 @@ class MyOrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        orgunits = OrgUnit.objects.exclude(prefix__isnull=True).exclude(is_active=False).distinct()
         if self.request.user.is_superuser:
-            return OrgUnit.objects.exclude(prefix__isnull=True).exclude(is_active=False).distinct()
+            return orgunits
 
-        return OrgUnit.objects.filter(admin_groups__in=self.request.user.groups.values('id')).exclude(prefix__isnull=True).exclude(is_active=False).distinct()
+        group_ids = self.request.user.groups.values('id')
+        return orgunits.filter(admin_groups__in=group_ids)
 
 
 class OrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
