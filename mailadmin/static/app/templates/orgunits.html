@@ -1,3 +1,4 @@
+<li class="active"><a href="/lists/" data-prefix=".+">Alle</a></li>
 {% for ou in orgunits %}
 <li><a href="/lists/?q={{ou.prefix }}" data-prefix="{{ou.prefix }}">{{ ou.name }}</a></li>
 {% endfor %}

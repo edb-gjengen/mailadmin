@@ -68,7 +68,7 @@ frame.set("loop.revindex0", t_7 - t_6 - 1);
 frame.set("loop.first", t_6 === 0);
 frame.set("loop.last", t_6 === t_7 - 1);
 frame.set("loop.length", t_7);
-output += "\n\t\t\t\t<tr><td>";
+output += "\n\t\t\t\t<tr><td class=\"member\">";
 output += runtime.suppressValue(runtime.memberLookup((t_9),"forward", env.autoesc), env.autoesc);
 output += "</td><td class=\"del-cell\"><label class=\"del-label\" for=\"";
 output += runtime.suppressValue(runtime.memberLookup((t_9),"dest", env.autoesc), env.autoesc);
@@ -87,11 +87,11 @@ output += "\"></label></td></tr>\n\t\t\t";
 }
 }
 frame = frame.pop();
-output += "\n\t\t\t\t<tr class=\"action-row\">\n\t\t\t\t<td>\n\t\t\t\t\t<a href=\"#\" class=\"link-add js-toggle-email-textarea\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span> Legg til</a></span>\n\t\t\t\t</td>\n\t\t\t\t<td>\n\t\t\t\t\t<a href=\"#\" class=\"link-del js-del-selected\" type=\"button\" data-delete-list-name=\"";
+output += "\n\t\t\t\t<tr class=\"action-row\">\n\t\t\t\t<td>\n\t\t\t\t\t<a href=\"#\" class=\"link-add js-toggle-email-textarea\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span> Legg til</a>\n\t\t\t\t</td>\n\t\t\t\t<td>\n\t\t\t\t\t<a href=\"#\" class=\"link-del js-del-selected\" type=\"button\" data-delete-list-name=\"";
 output += runtime.suppressValue(t_4, env.autoesc);
 output += "\"><span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></span> Slett</a>\n\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t\t<tr class=\"textarea-row\">\n\t\t\t\t<td colspan=\"2\">\n\t\t\t\t\t<h4>Eposter <span class=\"badge email-counter\"></span></h4>\n    \t\t\t\t<textarea class=\"form-control js-add-list-textarea\" data-list-name=\"";
 output += runtime.suppressValue(t_4, env.autoesc);
-output += "\" placeholder=\"asdf@studentersamfundet.no, qwerty@studentersamfundet.no f.eks. Klipp og lim så mye du orker\" rows=\"4\"></textarea>\n    \t\t\t\t<button type=\"button\" class=\"btn btn-primary btn-add-list js-new-email\"><span class=\"glyphicon glyphicon-plus js-new-email\" aria-hidden=\"true\"></span> Opprett liste</button>\n    \t\t\t</td>\n    \t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t\t<div class=\"result-alert\"></div>\n\t</div>\n</div>\n";
+output += "\" placeholder=\"asdf@studentersamfundet.no, qwerty@studentersamfundet.no f.eks. Klipp og lim så mye du orker\" rows=\"4\"></textarea>\n    \t\t\t\t<button type=\"button\" class=\"btn btn-primary btn-add-list js-new-email\"><span class=\"glyphicon glyphicon-plus js-new-email\" aria-hidden=\"true\"></span> Legg til</button>\n    \t\t\t</td>\n    \t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t\t<div class=\"result-alert\"></div>\n\t</div>\n</div>\n";
 ;
 }
 } else {
@@ -129,7 +129,7 @@ frame.set("loop.revindex0", t_13 - t_12 - 1);
 frame.set("loop.first", t_12 === 0);
 frame.set("loop.last", t_12 === t_13 - 1);
 frame.set("loop.length", t_13);
-output += "\n\t\t\t\t<tr><td>";
+output += "\n\t\t\t\t<tr><td class=\"member\">";
 output += runtime.suppressValue(runtime.memberLookup((t_15),"forward", env.autoesc), env.autoesc);
 output += "</td><td class=\"del-cell\"><label class=\"del-label\" for=\"";
 output += runtime.suppressValue(runtime.memberLookup((t_15),"dest", env.autoesc), env.autoesc);
@@ -148,11 +148,11 @@ output += "\"></label></td></tr>\n\t\t\t";
 }
 }
 frame = frame.pop();
-output += "\n\t\t\t\t<tr class=\"action-row\">\n\t\t\t\t<td>\n\t\t\t\t\t<a href=\"#\" class=\"link-add js-toggle-email-textarea\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span> Legg til</a></span>\n\t\t\t\t</td>\n\t\t\t\t<td>\n\t\t\t\t\t<a href=\"#\" class=\"link-del js-del-selected\" type=\"button\" data-delete-list-name=\"";
+output += "\n\t\t\t\t<tr class=\"action-row\">\n\t\t\t\t<td>\n\t\t\t\t\t<a href=\"#\" class=\"link-add js-toggle-email-textarea\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span> Legg til</a>\n\t\t\t\t</td>\n\t\t\t\t<td>\n\t\t\t\t\t<a href=\"#\" class=\"link-del js-del-selected\" type=\"button\" data-delete-list-name=\"";
 output += runtime.suppressValue(t_10, env.autoesc);
 output += "\"><span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></span> Slett</a>\n\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t\t<tr class=\"textarea-row\">\n\t\t\t\t<td colspan=\"2\">\n\t\t\t\t\t<h4>Eposter <span class=\"badge email-counter\"></span></h4>\n    \t\t\t\t<textarea class=\"form-control js-add-list-textarea\" data-list-name=\"";
 output += runtime.suppressValue(t_10, env.autoesc);
-output += "\" placeholder=\"asdf@studentersamfundet.no, qwerty@studentersamfundet.no f.eks. Klipp og lim så mye du orker\" rows=\"4\"></textarea>\n    \t\t\t\t<button type=\"button\" class=\"btn btn-primary btn-add-list js-new-email\"><span class=\"glyphicon glyphicon-plus js-new-email\" aria-hidden=\"true\"></span> Opprett liste</button>\n    \t\t\t</td>\n    \t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t\t<div class=\"result-alert\"></div>\n\t</div>\n</div>\n";
+output += "\" placeholder=\"asdf@studentersamfundet.no, qwerty@studentersamfundet.no f.eks. Klipp og lim så mye du orker\" rows=\"4\"></textarea>\n    \t\t\t\t<button type=\"button\" class=\"btn btn-primary btn-add-list js-new-email\"><span class=\"glyphicon glyphicon-plus js-new-email\" aria-hidden=\"true\"></span> Legg til</button>\n    \t\t\t</td>\n    \t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t\t<div class=\"result-alert\"></div>\n\t</div>\n</div>\n";
 ;
 }
 }
@@ -223,6 +223,7 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
+output += "<li class=\"active\"><a href=\"/lists/\" data-prefix=\".+\">Alle</a></li>\n";
 frame = frame.push();
 var t_3 = runtime.contextOrFrameLookup(context, frame, "orgunits");
 if(t_3) {var t_2 = t_3.length;

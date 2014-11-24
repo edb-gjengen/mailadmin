@@ -21,10 +21,10 @@ def index(request):
         if form.is_valid():
             # Log the user in.
             login(request, form.get_user())
-            return redirect('home')
+            return redirect('lists')
     else:
         if request.user.is_authenticated():
-            return redirect('home')
+            return redirect('lists')
         else:
             form = AuthenticationForm(request)
 
@@ -32,8 +32,8 @@ def index(request):
 
 
 @login_required
-def home(request):
-    return render(request, "home.html")
+def lists(request):
+    return render(request, "lists.html")
 
 
 def logout(request):

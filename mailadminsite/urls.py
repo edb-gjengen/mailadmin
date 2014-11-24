@@ -5,7 +5,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns = patterns(
     '',
     url(r'^$', 'mailadmin.views.index', name='index'),
-    url(r'^lists/$', 'mailadmin.views.home', name='home'),
+    url(r'^lists/$', 'mailadmin.views.lists', name='lists'),
     url(r'^api/', include('mailadmin.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),

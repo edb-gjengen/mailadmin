@@ -14,15 +14,13 @@
         }
         /* Get each word from the text, split by spaces, end line, semicolon,
             quotes, commas, colons, parens and brackets. */
-        var words = text.split(/[\s\n;"',;:()<>[\]\\]+/),
-            emails = [],
-            distinct_emails;
+        var words = text.split(/[\s\n;"',;:()<>[\]\\]+/);
 
         // Regex for identifying an email address.
         var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         // For each of the words, add to the array of emails if the word matches the email regex.
-        emails = _.filter(words, function(word) {
+        var emails = _.filter(words, function(word) {
             return word.match(re);
         });
         emails = _.map(emails, function(el) {
@@ -34,7 +32,46 @@
     function renderAlert(msg, alertClass, iconClass) {
         return nunjucks.render('alert.html', {'msg': msg, 'alertClass': alertClass, 'iconClass': iconClass});
     }
+    function filter_lists_with_members(term, pushState) {
+        console.log(pushState);
+        if(pushState) {
+            /* Update query string */
+            window.history.pushState(null, null, '/lists/?q=' + term);
+        }
 
+        /* Filter lists */
+        var re_term = new RegExp(term);
+        $(".fwdlist").each(function() {
+            var cur_name = $(this).attr('data-list-name');
+            var members = $(this).find('.member');
+            var hits = _.filter(members, function(el) {
+                return re_term.test($(el).text());
+            });
+            if(re_term.test(cur_name) || hits.length !== 0) {
+                $(this).removeClass('hidden');
+            } else {
+                $(this).addClass('hidden');
+            }
+        });
+
+    }
+    // TODO combine with above
+    function filter_lists(prefix, pushState) {
+        if(pushState) {
+            /* Update query string */
+            window.history.pushState(null, null, '/lists/?q=^' + prefix);
+        }
+        /* Filter lists */
+        var re_prefix = new RegExp('^'+prefix);
+        $(".fwdlist").each(function() {
+            var cur_name = $(this).attr('data-list-name');
+            if(re_prefix.test(cur_name)) {
+                $(this).removeClass('hidden');
+            } else {
+                $(this).addClass('hidden');
+            }
+        });
+    }
 
     $(document).ready(function() {
         var csrf_token = $('meta[name=x-csrf-token]').attr('content');
@@ -43,14 +80,15 @@
             fwd_delete: '/api/forward/',
             fwd_create: '/api/forward/', // + forwarder
             ou_list: '/api/orgunits/',
-            me: '/api/me/',
+            me: '/api/me/'
         };
+        var forwards_container = $(".forwards-container");
         nunjucks.configure({ autoescape: true });
 
-        /* Home view (lists) */
+        /* Lists view (home) */
         if( $('body.home').length ) {
             $.getJSON(api_urls.ou_list, function(data) {
-                /* orgunit list */
+                /* Load orgunit list */
                 var ou_html = nunjucks.render('orgunits.html', { orgunits: data });
                 $(".orgunit-list").append(ou_html);
                 var ous_html = nunjucks.render('orgunits_select.html', { orgunits: data });
@@ -63,7 +101,7 @@
                 });
 
                 $('.new-list').html(new_list_html);
-                $('.new-list .js-new-list-name').on('keyup', function(e) {
+                $('.new-list .js-new-list-name').on('keyup', function() {
                     var new_list_name = $('.new-list .js-new-list-name').val();
                     if(new_list_name === '') {
                         new_list_name = 'Ny liste';
@@ -80,7 +118,8 @@
                     var prefix = $(this).parent().attr('data-value');
                     $('.new-list .prefix-btn').html(prefix+' <span class="caret"></span>');
                 });
-                $('.new-list textarea').on('keyup', function(e) {
+                // TODO put this in a function with selector as argument
+                $('.new-list textarea').on('keyup', function() {
                     var text = $(this).val();
                     var emails = parseEmails(text);
 
@@ -114,22 +153,24 @@
                         return {'dest': dest, 'forward': el};
                     });
 
-                    $.post(api_urls.fwd_create, new_list[dest], function() {
-                        $('.new-list-result').html(renderAlert('Lagt til ny liste: ' + dest, 'success'));
-                        $('.new-list textarea').val('');
-                        $('.new-list .js-new-list-name').val('');
-                    }, 'json'));
-                    var added_list_html = nunjucks.render('list.html', {
-                        lists: new_list,
-                    });
-                    $(".forwards-container").prepend(added_list_html);
+                    $.post(
+                        api_urls.fwd_create,
+                        new_list[dest],
+                        function() {
+                            $('.new-list-result').html(renderAlert('Lagt til ny liste: ' + dest, 'success'));
+                            $('.new-list textarea').val('');
+                            $('.new-list .js-new-list-name').val('');
+                        },
+                        'json'
+                    );
+                    var added_list_html = nunjucks.render('list.html', { lists: new_list });
+                    forwards_container.prepend(added_list_html);
 
                 });
 
-                /* Add list filter by orgunit */
+                /* Filter lists by orgunit */
                 $(".orgunit-list a").on('click', function(e) {
                     var prefix = $(this).attr('data-prefix');
-                    var querystring = $(this).attr('href');
                     e.preventDefault();
 
                     /* Toggle selection */
@@ -137,52 +178,29 @@
                     $(this).parent().toggleClass('active');
                     $('.orgunits-select').val(prefix);
 
-                    /* Update query string */
-                    window.history.pushState(null, null, querystring);
-
-                    /* Filter lists */
-                    var re_prefix = new RegExp('^'+prefix);
-                    $(".fwdlist").each(function(el) {
-                        var cur_name = $(this).attr('data-list-name');
-                        if(re_prefix.test(cur_name)) {
-                            $(this).removeClass('hidden');
-                        } else {
-                            $(this).addClass('hidden');
-                        }
-                    });
+                    filter_lists(prefix, true);
+                    $('.js-lists-filter-field').val('');
                 });
-                $(".orgunits-select").on('change', function(e) {
+                $(".orgunits-select").on('change', function() {
                     var prefix = $(this).val();
-                    var querystring = '/lists/?q='+prefix;
 
                     /* Toggle selection */
                     $(".orgunit-list li").removeClass('active');
                     $(".orgunit-list li a[data-prefix="+prefix+"]").parent().toggleClass('active');
 
-                    /* Update query string */
-                    window.history.pushState(null, null, querystring);
-
-                    /* Filter lists */
-                    var re_prefix = new RegExp('^'+prefix);
-                    $(".fwdlist").each(function(el) {
-                        var cur_name = $(this).attr('data-list-name');
-                        if(re_prefix.test(cur_name)) {
-                            $(this).removeClass('hidden');
-                        } else {
-                            $(this).addClass('hidden');
-                        }
-                    });
+                    filter_lists(prefix, true);
+                    $('.js-lists-filter-field').val('');
                 });
             });
 
-            /* Load forwards from API and write to container */
+            /* Load forwards from API and put on page */
             $.getJSON(api_urls.fwd_list, function(data) {
                 if( !data.cpanelresult ) {
-                    $(".forwards-container").html(renderAlert("No results.", 'info'));
+                    forwards_container.html(renderAlert("No results.", 'info'));
                     return;
                 }
                 if( 'error' in data.cpanelresult ) {
-                    $(".forwards-container").html(renderAlert("Klarte ikke hente epostlister fra APIet: "+data.cpanelresult.error, 'danger'));
+                    forwards_container.html(renderAlert("Klarte ikke hente epostlister fra APIet: "+data.cpanelresult.error, 'danger'));
                     return;
                 }
 
@@ -193,11 +211,28 @@
                     api_urls: api_urls
                 });
 
-                $(".forwards-container").html(fw_html);
+                forwards_container.html(fw_html);
+
+                /* Load filter from query string */
+                var q_term = getParameterByName('q');
+                if(q_term) {
+                    if(q_term[0] === '^') {
+                        filter_lists(q_term, false);
+                    } else {
+                        filter_lists_with_members(q_term, false);
+                    }
+                }
+                /* Filter by search query */
+                $('.js-lists-filter-field').on('keyup', function() {
+                    var term = $(this).val();
+                    filter_lists_with_members(term, true);
+                    $(".orgunit-list li").removeClass('active');
+                    $(".orgunit-list li:first-child").toggleClass('active');
+                });
             });
 
             /* Mark row red for deletion and show delete button if applicable */
-            $(".forwards-container").on('click', '[name=fwd-delete]', function(e) {
+            forwards_container.on('click', '[name=fwd-delete]', function() {
                 $(this).parent().parent().parent().toggleClass('danger');
                 var tbody = $(this).closest('tbody');
                 var num_selected = tbody.find("[name=fwd-delete]:checked").length;
@@ -208,8 +243,8 @@
                 }
             });
             /* Delete selected */
-            $(".forwards-container").on('click', '.js-del-selected', function(e) {
-                $(this).attr('data-delete-list-name');
+           forwards_container.on('click', '.js-del-selected', function() {
+                var list_name = $(this).attr('data-delete-list-name');
                 var checked = $('[data-list-name="'+list_name+'"] [name="fwd-delete"]:checked');
                 var delete_these = _.map(checked, function(el) {
                     return $(el).val();
@@ -227,21 +262,25 @@
                     // TODO remove list if no more rows
                 });
             });
+
             /* Toggles emails textarea */
-            $(".forwards-container").on('click', '.js-toggle-email-textarea', function(e) {
+            forwards_container.on('click', '.js-toggle-email-textarea', function(e) {
                 e.preventDefault();
                 var row = $(this).closest('tbody').find('.textarea-row');
                 row.toggleClass('visible');
             });
+
             /* Add emails to current list */
-            $(".forwards-container").on('click', '.js-new-email', function(e) {
+            forwards_container.on('click', '.js-new-email', function(e) {
                 e.preventDefault();
                 // TODO refactor logic from new list and add here
             });
+
             /* New list toggle display */
             $('.new-list-btn').on('click', function() {
                 $('.new-list').toggleClass('visible');
             });
         }
+
     });
 })();

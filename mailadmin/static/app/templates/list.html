@@ -5,11 +5,11 @@
 		<table class="table table-condensed">
 	        <tbody>
 			{% for member in members %}
-				<tr><td>{{ member.forward }}</td><td class="del-cell"><label class="del-label" for="{{ member.dest }}={{ member.forward }}"><input id="{{ member.dest }}={{ member.forward }}" type="checkbox" name='fwd-delete' value="{{ member.dest }}={{ member.forward }}"></label></td></tr>
+				<tr><td class="member">{{ member.forward }}</td><td class="del-cell"><label class="del-label" for="{{ member.dest }}={{ member.forward }}"><input id="{{ member.dest }}={{ member.forward }}" type="checkbox" name='fwd-delete' value="{{ member.dest }}={{ member.forward }}"></label></td></tr>
 			{% endfor %}
 				<tr class="action-row">
 				<td>
-					<a href="#" class="link-add js-toggle-email-textarea"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Legg til</a></span>
+					<a href="#" class="link-add js-toggle-email-textarea"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Legg til</a>
 				</td>
 				<td>
 					<a href="#" class="link-del js-del-selected" type="button" data-delete-list-name="{{ list }}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Slett</a>
@@ -19,7 +19,7 @@
 				<td colspan="2">
 					<h4>Eposter <span class="badge email-counter"></span></h4>
     				<textarea class="form-control js-add-list-textarea" data-list-name="{{ list }}" placeholder="asdf@studentersamfundet.no, qwerty@studentersamfundet.no f.eks. Klipp og lim så mye du orker" rows="4"></textarea>
-    				<button type="button" class="btn btn-primary btn-add-list js-new-email"><span class="glyphicon glyphicon-plus js-new-email" aria-hidden="true"></span> Opprett liste</button>
+    				<button type="button" class="btn btn-primary btn-add-list js-new-email"><span class="glyphicon glyphicon-plus js-new-email" aria-hidden="true"></span> Legg til</button>
     			</td>
     			</tr>
 			</tbody>
