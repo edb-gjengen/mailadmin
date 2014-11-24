@@ -59,10 +59,10 @@
     function filter_lists(prefix, pushState) {
         if(pushState) {
             /* Update query string */
-            window.history.pushState(null, null, '/lists/?q=^' + prefix);
+            window.history.pushState(null, null, '/lists/?q=^' + prefix+'-');
         }
         /* Filter lists */
-        var re_prefix = new RegExp('^'+prefix);
+        var re_prefix = new RegExp('^'+prefix+'-');
         $(".fwdlist").each(function() {
             var cur_name = $(this).attr('data-list-name');
             if(re_prefix.test(cur_name)) {
