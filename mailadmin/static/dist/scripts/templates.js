@@ -223,7 +223,7 @@ var lineno = null;
 var colno = null;
 var output = "";
 try {
-output += "<li class=\"active\"><a href=\"/lists/\" data-prefix=\".+\">Alle</a></li>\n";
+output += "<li class=\"active\"><a href=\"/lists/\" data-prefix=\".*\">Alle</a></li>\n";
 frame = frame.push();
 var t_3 = runtime.contextOrFrameLookup(context, frame, "orgunits");
 if(t_3) {var t_2 = t_3.length;
@@ -243,7 +243,9 @@ output += "\" data-prefix=\"";
 output += runtime.suppressValue(runtime.memberLookup((t_4),"prefix", env.autoesc), env.autoesc);
 output += "\">";
 output += runtime.suppressValue(runtime.memberLookup((t_4),"name", env.autoesc), env.autoesc);
-output += "</a></li>\n";
+output += " (";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"prefix", env.autoesc), env.autoesc);
+output += ")</a></li>\n";
 ;
 }
 }

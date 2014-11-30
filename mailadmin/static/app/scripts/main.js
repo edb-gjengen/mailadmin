@@ -29,11 +29,7 @@
 
         return _.unique(emails);
     }
-    function renderAlert(msg, alertClass, iconClass) {
-        return nunjucks.render('alert.html', {'msg': msg, 'alertClass': alertClass, 'iconClass': iconClass});
-    }
-    function filter_lists_with_members(term, pushState) {
-        console.log(pushState);
+    function filter_lists(term, pushState, with_members) {
         if(pushState) {
             /* Update query string */
             window.history.pushState(null, null, '/lists/?q=' + term);
@@ -47,7 +43,7 @@
             var hits = _.filter(members, function(el) {
                 return re_term.test($(el).text());
             });
-            if(re_term.test(cur_name) || hits.length !== 0) {
+            if(re_term.test(cur_name) || (hits.length !== 0 && with_members) ) {
                 $(this).removeClass('hidden');
             } else {
                 $(this).addClass('hidden');
@@ -55,21 +51,14 @@
         });
 
     }
-    // TODO combine with above
-    function filter_lists(prefix, pushState) {
-        if(pushState) {
-            /* Update query string */
-            window.history.pushState(null, null, '/lists/?q=^' + prefix+'-');
-        }
-        /* Filter lists */
-        var re_prefix = new RegExp('^'+prefix+'-');
-        $(".fwdlist").each(function() {
-            var cur_name = $(this).attr('data-list-name');
-            if(re_prefix.test(cur_name)) {
-                $(this).removeClass('hidden');
-            } else {
-                $(this).addClass('hidden');
-            }
+    function notify(title, text, type) {
+        /* types: info, success, error */
+        new PNotify({
+            title: title,
+            text: text,
+            type: type,
+            delay: 3000,
+            animate_speed: 'fast'
         });
     }
 
@@ -93,12 +82,19 @@
                 $(".orgunit-list").append(ou_html);
                 var ous_html = nunjucks.render('orgunits_select.html', { orgunits: data });
                 $(".orgunit-select-container").html(ous_html);
+                var q_term = getParameterByName('q');
+                if(q_term && q_term[0] === '^') {
+                    var prefix = q_term.slice(1, -1);
+                    $(".orgunit-list li").removeClass('active');
+                    $('.orgunit-list li a[data-prefix="'+prefix+'"]').parent().toggleClass('active');
+                }
 
                 /* New list */
                 var new_list_html = nunjucks.render('new_list.html', {
                     orgunits: data,
                     api_urls: api_urls
                 });
+
 
                 $('.new-list').html(new_list_html);
                 $('.new-list .js-new-list-name').on('keyup', function() {
@@ -135,13 +131,13 @@
                     /* Validate */
                     var new_list_name = $('.new-list .js-new-list-name').val();
                     if(new_list_name.length === 0) {
-                        $('.new-list-result').html(renderAlert('Navn på epostliste mangler', 'danger'));
+                        notify('Ny epostliste', 'Navn på epostliste mangler', 'error');
                         return;
                     }
                     var text = $('.new-list textarea').val();
                     var emails = parseEmails(text);
                     if(emails.length === 0) {
-                        $('.new-list-result').html(renderAlert('Ingen eposter i epost-feltet...', 'danger'));
+                        notify('Ny epostliste', 'Ingen eposter i epost-feltet...', 'error');
                         return;
                     }
                     // Valid form
@@ -157,7 +153,7 @@
                         api_urls.fwd_create,
                         new_list[dest],
                         function() {
-                            $('.new-list-result').html(renderAlert('Lagt til ny liste: ' + dest, 'success'));
+                            notify('Lagt til', 'Ny liste: ' + dest + 'lagt til', 'success');
                             $('.new-list textarea').val('');
                             $('.new-list .js-new-list-name').val('');
                         },
@@ -178,7 +174,7 @@
                     $(this).parent().toggleClass('active');
                     $('.orgunits-select').val(prefix);
 
-                    filter_lists(prefix, true);
+                    filter_lists('^'+prefix+'-', true);
                     $('.js-lists-filter-field').val('');
                 });
                 $(".orgunits-select").on('change', function() {
@@ -188,7 +184,7 @@
                     $(".orgunit-list li").removeClass('active');
                     $(".orgunit-list li a[data-prefix="+prefix+"]").parent().toggleClass('active');
 
-                    filter_lists(prefix, true);
+                    filter_lists('^'+prefix+'-', true);
                     $('.js-lists-filter-field').val('');
                 });
             });
@@ -196,11 +192,11 @@
             /* Load forwards from API and put on page */
             $.getJSON(api_urls.fwd_list, function(data) {
                 if( !data.cpanelresult ) {
-                    forwards_container.html(renderAlert("No results.", 'info'));
+                    notify("Ingen lister.", 'Fant ingen tilhørende lister', 'info');
                     return;
                 }
                 if( 'error' in data.cpanelresult ) {
-                    forwards_container.html(renderAlert("Klarte ikke hente epostlister fra APIet: "+data.cpanelresult.error, 'danger'));
+                    notify('Oops!', 'Klarte ikke hente epostlister fra APIet: '+data.cpanelresult.error, 'error');
                     return;
                 }
 
@@ -219,13 +215,13 @@
                     if(q_term[0] === '^') {
                         filter_lists(q_term, false);
                     } else {
-                        filter_lists_with_members(q_term, false);
+                        filter_lists(q_term, false, true);
                     }
                 }
                 /* Filter by search query */
                 $('.js-lists-filter-field').on('keyup', function() {
                     var term = $(this).val();
-                    filter_lists_with_members(term, true);
+                    filter_lists(term, true, true);
                     $(".orgunit-list li").removeClass('active');
                     $(".orgunit-list li:first-child").toggleClass('active');
                 });
