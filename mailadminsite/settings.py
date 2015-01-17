@@ -86,11 +86,11 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = '/lists/'
 
-CP_API_URL = 'https://web.studentersamfundet.no:2083/json-api/cpanel'
-CP_API_USERNAME = "root"
-CP_API_PASSWORD = ""
+DPD_API_URL= 'https://mxapi.neuf.no/api'
+DPD_API_USERNAME = ""
+DPD_API_PASSWORD = ""
 
-NEUF_EMAIL_DOMAIN = 'studentersamfundet.no'
+NEUF_EMAIL_DOMAIN_NAME = 'stry.no'
 
 AUTHENTICATION_BACKENDS = (
     'mailadmin.backends.LDAPEmailBackend',

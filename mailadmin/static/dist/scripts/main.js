@@ -65,9 +65,7 @@
     $(document).ready(function() {
         var csrf_token = $('meta[name=x-csrf-token]').attr('content');
         var api_urls = {
-            fwd_list: '/api/forwards/',
-            fwd_delete: '/api/forward/',
-            fwd_create: '/api/forward/', // + forwarder
+            aliases: '/api/aliases/',
             ou_list: '/api/orgunits/',
             me: '/api/me/'
         };
@@ -150,7 +148,7 @@
                     });
 
                     $.post(
-                        api_urls.fwd_create,
+                        api_urls.aliases,
                         new_list[dest],
                         function() {
                             notify('Lagt til', 'Ny liste: ' + dest + 'lagt til', 'success');
@@ -190,22 +188,24 @@
             });
 
             /* Load forwards from API and put on page */
-            $.getJSON(api_urls.fwd_list, function(data) {
-                if( !data.cpanelresult ) {
-                    notify("Ingen lister.", 'Fant ingen tilhørende lister', 'info');
+            $.getJSON(api_urls.aliases, function(data) {
+                var err_msg;
+                if( data && data.length === 0 ) {
+                    err_msg = 'Fant ingen tilhørende lister';
+                    notify("Ingen lister.", err_msg, 'info');
+                    forwards_container.html(err_msg);
                     return;
                 }
-                if( 'error' in data.cpanelresult ) {
-                    notify('Oops!', 'Klarte ikke hente epostlister fra APIet: '+data.cpanelresult.error, 'error');
+                if( data && 'error' in data ) {
+                    err_msg = 'Klarte ikke hente epostlister fra APIet: '+data.error;
+                    notify('Oops!', err_msg, 'error');
+                    forwards_container.html(err_msg);
                     return;
                 }
 
-                var forwards = data.cpanelresult.data;
-                var lists =_.groupBy(forwards, function(fwd) { return fwd.dest; });
-                var fw_html = nunjucks.render('list.html', {
-                    lists: lists,
-                    api_urls: api_urls
-                });
+                var forwards = data;
+                var lists =_.groupBy(forwards, function(fwd) { return fwd.source; });
+                var fw_html = nunjucks.render('list.html', { lists: lists });
 
                 forwards_container.html(fw_html);
 
@@ -248,7 +248,7 @@
                 var data = {
                     type: 'DELETE',
                     headers: {'X-CSRFToken': csrf_token},
-                    url: api_urls.fwd_delete,
+                    url: api_urls.aliases,
                     data: delete_these,
                     dataType: 'json'
                 };

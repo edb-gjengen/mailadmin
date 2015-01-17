@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib.auth import login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
@@ -7,15 +6,15 @@ from django.shortcuts import render, redirect
 from rest_framework import viewsets, views
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import status
 
-from mailadmin.api import CPanel
+from mailadmin.api import DjangoPostfixDovecotAPI
 from mailadmin.models import OrgUnit
-from mailadmin.serializers import UserSerializer, OrgUnitSerializer, ForwardSerializer
-from mailadmin.permissions import DestinationPrefixOwner
+from mailadmin.serializers import UserSerializer, OrgUnitSerializer, AliasSerializer
+from mailadmin.permissions import SourcePrefixOwner
 
 
 def index(request):
-    form = {}
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -41,14 +40,12 @@ def logout(request):
     return redirect('index')
 
 
-class ForwardsViewSet(viewsets.ViewSet):
-    """
-    Forwards from cPanel
-    """
+class AliasesView(views.APIView):
+    """ List, create and delete aliases from mxapi """
+    _api = DjangoPostfixDovecotAPI()
+    permission_classes = (SourcePrefixOwner,)
 
-    permission_classes = [IsAuthenticated]
-
-    def list(self, request):
+    def get(self, request):
         group_filter = request.QUERY_PARAMS.get('groups', None)
         if group_filter is None:
             my_groups = request.user.groups.all()
@@ -67,62 +64,28 @@ class ForwardsViewSet(viewsets.ViewSet):
 
         my_prefixes = orgunits.values_list('prefix', flat=True)
         # Prepare regular expression
-        regexp = '|'.join(['^{0}-'.format(p) for p in my_prefixes])
+        regexp = '|'.join(['^{0}-|^{0}@'.format(p) for p in my_prefixes])
         if len(my_prefixes) == 0:
             return Response({'result': 'No results'})  # Need at least one
 
-        cp = CPanel()
-        params = dict(
-            domain=settings.NEUF_EMAIL_DOMAIN,
-            regex=regexp
-        )
-
-        res = cp.api('Email', 'listforwards', params)
+        res = self._api.list_aliases_regex(regexp)
         return Response(res)
-
-
-class ForwardCreateView(views.APIView):
-    _cp = CPanel()
-    permission_classes = (DestinationPrefixOwner,)
 
     def post(self, request):
-        fw = ForwardSerializer(data=request.DATA)
-        if not fw.is_valid():
-            return Response(fw.errors, status=400)
+        aliases = AliasSerializer(data=request.DATA, many=True)
+        if not aliases.is_valid():
+            return Response(aliases.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # fw.data
-        params = dict(
-            domain=settings.NEUF_EMAIL_DOMAIN,
-            email=fw.data['dest'].replace('@{0}'.format(settings.NEUF_EMAIL_DOMAIN), ''),
-            fwdopt='fwd',
-            fwdemail=fw.data['forward']
-        )
-        # FIXME: unreliable
-        # res = self._cp.api('Email', 'addforward', params)
-        res = {'errors': 'Not implemented'}
+        res = self._api.create_aliases(aliases.data)
         return Response(res)
 
+    def delete(self, request):
+        aliases = AliasSerializer(data=request.DATA, many=True)
+        if not aliases.is_valid():
+            return Response(aliases.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ForwardDeleteView(views.APIView):
-    _cp = CPanel()
-    permission_classes = (DestinationPrefixOwner,)
-
-    def delete(self, request, forwarder=None):
-        invalid_forwarder = {'error': 'Invalid forwarder: {0}'.format(forwarder)}
-        if '=' not in forwarder:
-            return Response(invalid_forwarder, status=400)
-
-        fwd_data = forwarder.split("=")
-
-        fw = ForwardSerializer(data={'dest': fwd_data[0], 'forward': fwd_data[1]})
-        if not fw.is_valid():
-            return Response(fw.errors, status=400)
-
-        params = {
-            'arg-0': '{0}={1}'.format(fw.data['dest'], fw.data['forward'])
-        }
-        # FIXME: unreliable
-        # res = self._cp.api('Email', 'delforward', params, version=1)
+        # FIXME: not tested
+        # res = self._api.delete_aliases(aliases)
         res = {'errors': 'Not implemented'}
         return Response(res)
 

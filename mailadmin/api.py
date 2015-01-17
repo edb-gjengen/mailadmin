@@ -2,33 +2,47 @@ import requests
 from django.conf import settings
 
 
-class CPanel(object):
+class DjangoPostfixDovecotAPI(object):
     """
-    CPanel API
+    django-postfix-dovecot-api
 
-    https://documentation.cpanel.net/display/SDK/cPanel+API+2+-+Email
-    https://documentation.cpanel.net/display/SDK/cPanel+API+1+-+Email
+    https://git.neuf.no/edb/django-postfix-dovecot-api#tab-readme
+
     """
-    def __init__(self, base_url=settings.CP_API_URL, username=settings.CP_API_USERNAME, password=settings.CP_API_PASSWORD):
+    def __init__(self, base_url=settings.DPD_API_URL, username=settings.DPD_API_USERNAME, password=settings.DPD_API_PASSWORD):
         self.base_url = base_url
         self.username = username
         self.password = password
 
-    def api(self, module, function, params=None, version=2):
-        generic = {
-            'cpanel_jsonapi_user': self.username,
-            'cpanel_jsonapi_module': module,
-            'cpanel_jsonapi_func': function,
-            'cpanel_jsonapi_apiversion': version,
-        }
-        if params is not None:
-            params = dict(generic.items() + params.items())
-
+    def _api(self, method, path, params=None, json=None):
         headers = {'content-type': 'application/json'}
-        r = requests.get(
-            self.base_url,
+        url = "{}{}".format(self.base_url, path)
+
+        r = requests.request(
+            method,
+            url,
             params=params,
-            headers=headers,
             auth=requests.auth.HTTPBasicAuth(self.username, self.password),
-            verify=False)
+            json=json,
+            headers=headers)
+
         return r.json()
+
+    def create_aliases(self, aliases):
+        return self._api('POST', '/aliases/create_bulk/', json=aliases)
+
+    def delete_aliases(self, aliases):
+        return self._api('DELETE', '/aliases/delete_bulk/', json=aliases)
+
+    def list_aliases_regex(self, regex):
+        """ Limit aliases by regular expression and domain name """
+        params = {
+            'domain__name': settings.NEUF_EMAIL_DOMAIN_NAME,
+            'source_regex': regex
+        }
+        print params
+        return self._api(
+            'GET',
+            '/aliases/',
+            params=params
+        )
