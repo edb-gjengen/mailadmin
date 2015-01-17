@@ -26,6 +26,8 @@ class DjangoPostfixDovecotAPI(object):
             json=json,
             headers=headers)
 
+        r.raise_for_status()
+
         return r.json()
 
     def create_aliases(self, aliases):
@@ -40,7 +42,6 @@ class DjangoPostfixDovecotAPI(object):
             'domain__name': settings.NEUF_EMAIL_DOMAIN_NAME,
             'source_regex': regex
         }
-        print params
         return self._api(
             'GET',
             '/aliases/',
