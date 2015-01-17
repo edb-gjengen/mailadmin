@@ -88,7 +88,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 LOGIN_REDIRECT_URL = '/lists/'
 
-DPD_API_URL= 'https://mxapi.neuf.no/api'
+DPD_API_URL = 'http://localhost'
 DPD_API_USERNAME = ""
 DPD_API_PASSWORD = ""
 
