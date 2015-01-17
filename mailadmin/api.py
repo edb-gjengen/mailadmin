@@ -1,5 +1,18 @@
 import requests
 from django.conf import settings
+import logging
+from rest_framework import exceptions
+
+logger = logging.getLogger(__name__)
+
+
+class DPDAPIException(exceptions.APIException):
+    status_code = 503
+    detail = 'Unknown error.'
+
+    def __init__(self, status_code, detail):
+        self.status_code = status_code
+        self.detail = detail
 
 
 class DjangoPostfixDovecotAPI(object):
@@ -26,7 +39,11 @@ class DjangoPostfixDovecotAPI(object):
             json=json,
             headers=headers)
 
-        r.raise_for_status()
+        try:
+            r.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            logger.warning('mxapi errored {}'.format(e.response))
+            raise DPDAPIException(status_code=e.response.status_code, detail=e.response.json())
 
         return r.json()
 
@@ -45,5 +62,17 @@ class DjangoPostfixDovecotAPI(object):
         return self._api(
             'GET',
             '/aliases/',
+            params=params
+        )
+
+    def list_domains(self, name=None):
+        params = {}
+
+        if name is not None:
+            params['name'] = name
+
+        return self._api(
+            'GET',
+            '/domains/',
             params=params
         )

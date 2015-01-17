@@ -205,7 +205,9 @@ output += "-</a></li>\n\t\t\t";
 }
 }
 frame = frame.pop();
-output += "\n\t\t\t</ul>\n\t\t</span>\n\t\t<input type=\"text\" class=\"form-control js-new-list-name\">\n\t\t<span class=\"input-group-addon\">@studentersamfundet.no</span>\n\t</div>\n  \t<h4>Eposter <span class=\"badge email-counter\"></span></h4>\n    <textarea class=\"form-control\" placeholder=\"asdf@studentersamfundet.no, qwerty@studentersamfundet.no f.eks. Klipp og lim så mye du orker\" rows=\"4\"></textarea>\n    <button type=\"button\" class=\"btn btn-primary btn-add-list js-add-list\"><span class=\"glyphicon glyphicon-plus js-add-list\" aria-hidden=\"true\"></span> Opprett liste</button>\n  </div>\n</div>";
+output += "\n\t\t\t</ul>\n\t\t</span>\n\t\t<input type=\"text\" class=\"form-control js-new-list-name\">\n\t\t<span class=\"input-group-addon\">@";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "email_domain")),"name", env.autoesc), env.autoesc);
+output += "</span>\n\t</div>\n  \t<h4>Eposter <span class=\"badge email-counter\"></span></h4>\n    <textarea class=\"form-control\" placeholder=\"asdf@studentersamfundet.no, qwerty@studentersamfundet.no f.eks. Klipp og lim så mye du orker\" rows=\"4\"></textarea>\n    <button type=\"button\" class=\"btn btn-primary btn-add-list js-add-list\"><span class=\"glyphicon glyphicon-plus js-add-list\" aria-hidden=\"true\"></span> Opprett liste</button>\n  </div>\n</div>";
 cb(null, output);
 ;
 } catch (e) {

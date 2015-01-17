@@ -30,11 +30,13 @@ class OrgUnitSerializer(serializers.ModelSerializer):
 class AliasSerializer(serializers.Serializer):
     source = serializers.EmailField(required=True)
     destination = serializers.EmailField(required=True)
-    _domain_name = settings.NEUF_EMAIL_DOMAIN_NAME
+    domain = serializers.IntegerField(required=True)
 
-    def validate_destonation(self, attrs, source):
-        domain_part = attrs[source].split('@')[1]
-        if domain_part != self._domain_name:
-            raise serializers.ValidationError("dest '{0}' is not in domain {1}".format(attrs[source], self._domain_name))
+    def validate_source(self, value):
+        _domain_name = settings.NEUF_EMAIL_DOMAIN_NAME
 
-        return attrs
+        domain_part = value.split('@')[1]
+        if domain_part != _domain_name:
+            raise serializers.ValidationError("source '{0}' is not in domain {1}".format(value, _domain_name))
+
+        return value

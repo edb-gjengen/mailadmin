@@ -67,7 +67,8 @@
         var api_urls = {
             aliases: '/api/aliases/',
             ou_list: '/api/orgunits/',
-            me: '/api/me/'
+            me: '/api/me/',
+            email_domain: '/api/emaildomain/'
         };
         var forwards_container = $(".forwards-container");
         nunjucks.configure({ autoescape: true });
@@ -87,103 +88,117 @@
                     $('.orgunit-list li a[data-prefix="'+prefix+'"]').parent().toggleClass('active');
                 }
 
-                /* New list */
-                var new_list_html = nunjucks.render('new_list.html', {
-                    orgunits: data,
-                    api_urls: api_urls
-                });
+                $.getJSON(api_urls.email_domain, function(email_domain) {
+                    email_domain = email_domain.domain;
+                    console.log(email_domain);
 
-
-                $('.new-list').html(new_list_html);
-                $('.new-list .js-new-list-name').on('keyup', function() {
-                    var new_list_name = $('.new-list .js-new-list-name').val();
-                    if(new_list_name === '') {
-                        new_list_name = 'Ny liste';
-                    } else {
-                        var prefix = $('.new-list .prefix-select .active').attr('data-value');
-                        new_list_name = 'NY: ' + prefix + new_list_name + "@studentersamfundet.no";
-                    }
-                    $('.js-new-list-preview').text(new_list_name);
-                });
-                /* Prefix select */
-                $('.new-list .prefix-select a').on('click', function() {
-                    $('.new-list .prefix-select a').parent().removeClass('active');
-                    $(this).parent().addClass('active');
-                    var prefix = $(this).parent().attr('data-value');
-                    $('.new-list .prefix-btn').html(prefix+' <span class="caret"></span>');
-                });
-                // TODO put this in a function with selector as argument
-                $('.new-list textarea').on('keyup', function() {
-                    var text = $(this).val();
-                    var emails = parseEmails(text);
-
-                    if(emails.length > 0) {
-                        $('.new-list .email-counter').text(emails.length);
-                    } else {
-                        $('.new-list .email-counter').text('');
-                    }
-                });
-                $('.js-add-list').on('click', function(e) {
-                    $('.new-list .result').html(''); // reset errors
-                    e.preventDefault();
-                    /* Validate */
-                    var new_list_name = $('.new-list .js-new-list-name').val();
-                    if(new_list_name.length === 0) {
-                        notify('Ny epostliste', 'Navn på epostliste mangler', 'error');
-                        return;
-                    }
-                    var text = $('.new-list textarea').val();
-                    var emails = parseEmails(text);
-                    if(emails.length === 0) {
-                        notify('Ny epostliste', 'Ingen eposter i epost-feltet...', 'error');
-                        return;
-                    }
-                    // Valid form
-                    var prefix = $('.new-list .prefix-select .active').attr('data-value');
-                    var dest = prefix + new_list_name + "@studentersamfundet.no";
-
-                    var new_list = {};
-                    new_list[dest] = _.map(emails, function(el) {
-                        return {'dest': dest, 'forward': el};
+                    /* New list */
+                    var new_list_html = nunjucks.render('new_list.html', {
+                        orgunits: data,
+                        api_urls: api_urls,
+                        email_domain: email_domain
                     });
 
-                    $.post(
-                        api_urls.aliases,
-                        new_list[dest],
-                        function() {
-                            notify('Lagt til', 'Ny liste: ' + dest + 'lagt til', 'success');
+
+                    $('.new-list').html(new_list_html);
+                    $('.new-list .js-new-list-name').on('keyup', function() {
+                        var new_list_name = $('.new-list .js-new-list-name').val();
+                        if(new_list_name === '') {
+                            new_list_name = 'Ny liste';
+                        } else {
+                            var prefix = $('.new-list .prefix-select .active').attr('data-value');
+                            new_list_name = 'NY: ' + prefix + new_list_name + "@" + email_domain.name;
+                        }
+                        $('.js-new-list-preview').text(new_list_name);
+                    });
+                    /* Prefix select */
+                    $('.new-list .prefix-select a').on('click', function() {
+                        $('.new-list .prefix-select a').parent().removeClass('active');
+                        $(this).parent().addClass('active');
+                        var prefix = $(this).parent().attr('data-value');
+                        $('.new-list .prefix-btn').html(prefix+' <span class="caret"></span>');
+                    });
+                    // TODO put this in a function with selector as argument
+                    $('.new-list textarea').on('keyup', function() {
+                        var text = $(this).val();
+                        var emails = parseEmails(text);
+
+                        if(emails.length > 0) {
+                            $('.new-list .email-counter').text(emails.length);
+                        } else {
+                            $('.new-list .email-counter').text('');
+                        }
+                    });
+                    $('.js-add-list').on('click', function(e) {
+                        e.preventDefault();
+                        /* Validate */
+                        var new_list_name = $('.new-list .js-new-list-name').val();
+                        if(new_list_name.length === 0) {
+                            notify('Ny epostliste', 'Navn på epostliste mangler', 'error');
+                            return;
+                        }
+                        var text = $('.new-list textarea').val();
+                        var emails = parseEmails(text);
+                        if(emails.length === 0) {
+                            notify('Ny epostliste', 'Ingen eposter i epost-feltet...', 'error');
+                            return;
+                        }
+                        // Valid form
+                        var prefix = $('.new-list .prefix-select .active').attr('data-value');
+                        var source = prefix + new_list_name + "@" + email_domain.name;
+
+                        var new_aliases = {};
+                        new_aliases = _.map(emails, function(el) {
+                            return {
+                                'source': source,
+                                'destination': el,
+                                'domain': email_domain.id
+                            };
+                        });
+                        console.log(new_aliases);
+                        $.ajax({
+                            url: api_urls.aliases,
+                            type: 'POST',
+                            headers: {'X-CSRFToken': csrf_token},
+                            dataType: 'json',
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify(new_aliases),
+
+                        }).done(function(resp) {
+                            console.log(resp);
+                            notify('Lagt til', 'Ny liste: ' + source + ' lagt til', 'success');
                             $('.new-list textarea').val('');
                             $('.new-list .js-new-list-name').val('');
-                        },
-                        'json'
-                    );
-                    var added_list_html = nunjucks.render('list.html', { lists: new_list });
-                    forwards_container.prepend(added_list_html);
+                            // FIXME: Existing list?
+                            var added_list_html = nunjucks.render('list.html', { lists: new_aliases });
+                            forwards_container.prepend(added_list_html);
+                        });
 
-                });
+                    });
 
-                /* Filter lists by orgunit */
-                $(".orgunit-list a").on('click', function(e) {
-                    var prefix = $(this).attr('data-prefix');
-                    e.preventDefault();
+                    /* Filter lists by orgunit */
+                    $(".orgunit-list a").on('click', function(e) {
+                        var prefix = $(this).attr('data-prefix');
+                        e.preventDefault();
 
-                    /* Toggle selection */
-                    $(".orgunit-list li").removeClass('active');
-                    $(this).parent().toggleClass('active');
-                    $('.orgunits-select').val(prefix);
+                        /* Toggle selection */
+                        $(".orgunit-list li").removeClass('active');
+                        $(this).parent().toggleClass('active');
+                        $('.orgunits-select').val(prefix);
 
-                    filter_lists('^'+prefix+'-', true);
-                    $('.js-lists-filter-field').val('');
-                });
-                $(".orgunits-select").on('change', function() {
-                    var prefix = $(this).val();
+                        filter_lists('^'+prefix+'-', true);
+                        $('.js-lists-filter-field').val('');
+                    });
+                    $(".orgunits-select").on('change', function() {
+                        var prefix = $(this).val();
 
-                    /* Toggle selection */
-                    $(".orgunit-list li").removeClass('active');
-                    $(".orgunit-list li a[data-prefix="+prefix+"]").parent().toggleClass('active');
+                        /* Toggle selection */
+                        $(".orgunit-list li").removeClass('active');
+                        $(".orgunit-list li a[data-prefix="+prefix+"]").parent().toggleClass('active');
 
-                    filter_lists('^'+prefix+'-', true);
-                    $('.js-lists-filter-field').val('');
+                        filter_lists('^'+prefix+'-', true);
+                        $('.js-lists-filter-field').val('');
+                    });
                 });
             });
 

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
@@ -6,6 +7,7 @@ from django.shortcuts import render, redirect
 import logging
 from requests import exceptions
 from rest_framework import viewsets, views
+from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -46,7 +48,7 @@ def logout(request):
 
 
 class AliasesView(views.APIView):
-    """ List, create and delete aliases from mxapi """
+    """ List, create and delete aliases from django-postfix-dovecot-api """
     _api = DjangoPostfixDovecotAPI()
     permission_classes = (SourcePrefixOwner,)
 
@@ -73,30 +75,32 @@ class AliasesView(views.APIView):
         if len(my_prefixes) == 0:
             return Response({'result': 'No results'})  # Need at least one
 
-        try:
-            res = self._api.list_aliases_regex(regexp)
-        except exceptions.RequestException as e:
-            logger.warning('mxapi errored {}'.format(e.strerror))
-            return Response({'error': e.strerror}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        res = self._api.list_aliases_regex(regexp)
 
         return Response(res)
 
     def post(self, request):
-        aliases = AliasSerializer(data=request.DATA, many=True)
+        aliases = AliasSerializer(data=request.data, many=True)
         if not aliases.is_valid():
             return Response(aliases.errors, status=status.HTTP_400_BAD_REQUEST)
 
         res = self._api.create_aliases(aliases.data)
+
         return Response(res)
 
     def delete(self, request):
-        aliases = AliasSerializer(data=request.DATA, many=True)
+        aliases = AliasSerializer(data=request.data, many=True)
         if not aliases.is_valid():
             return Response(aliases.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # FIXME: not tested
-        # res = self._api.delete_aliases(aliases)
-        res = {'errors': 'Not implemented'}
+        try:
+            # FIXME: not tested
+            # res = self._api.delete_aliases(aliases)
+            res = {'errors': 'Not implemented'}
+        except exceptions.RequestException as e:
+            logger.warning('mxapi errored {}'.format(e.strerror))
+            return Response({'error': e.strerror}, status=status.HTTP_400_BAD_REQUEST)
+
         return Response(res)
 
 
@@ -127,3 +131,14 @@ class OrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = OrgUnit.objects.all()
     serializer_class = OrgUnitSerializer
     permission_classes = [IsAuthenticated]
+
+
+@api_view(['GET'])
+def get_domain(request):
+    api = DjangoPostfixDovecotAPI()
+    domains = api.list_domains(name=settings.NEUF_EMAIL_DOMAIN_NAME)
+
+    if len(domains) != 1:
+        return Response({'domain': domains})
+
+    return Response({'domain': domains[0]})
