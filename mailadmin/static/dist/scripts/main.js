@@ -81,7 +81,7 @@
             counter.text('');
         }
     }
-    function create_aliases(new_aliases, onSuccess) {
+    function create_aliases(new_aliases, onSuccess, onError) {
         $.ajax({
             url: api_urls.aliases,
             type: 'POST',
@@ -89,7 +89,8 @@
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(new_aliases),
-            success: onSuccess
+            success: onSuccess,
+            error: onError
         });
     }
 
@@ -171,15 +172,26 @@
                             };
                         });
                        
-                        create_aliases(new_aliases, function(forwards) {
-                            notify('Lagt til', 'Ny liste: ' + forwards[0].source + ' lagt til', 'success');
-                            $('.new-list textarea').val('');
-                            $('.new-list .js-new-list-name').val('');
-                            // TODO: Existing list?
-                            //var new_list =_.groupBy(forwards, function(fwd) { return fwd.source; });
-                            //var added_list_html = nunjucks.render('list.html', { lists: new_list });
-                            //forwards_container.prepend(added_list_html);
-                        });
+                        create_aliases(
+                            new_aliases,
+                            function(forwards) {
+                                notify('Lagt til', 'Ny liste: ' + forwards[0].source + ' lagt til', 'success');
+                                $('.new-list textarea').val('');
+                                $('.new-list .js-new-list-name').val('');
+                                // TODO: Existing list?
+                                //var new_list =_.groupBy(forwards, function(fwd) { return fwd.source; });
+                                //var added_list_html = nunjucks.render('list.html', { lists: new_list });
+                                //forwards_container.prepend(added_list_html);
+                            },
+                            function(xhr) {
+                                var error = xhr.responseJSON;
+                                var msg = '';
+                                if( error && error[0].non_field_errors) {
+                                    msg = error[0].non_field_errors[0];
+                                }
+                                notify('Ikke oppdatert', 'Kunne ikke legge til nye eposter.\n' + msg, 'error');
+                            }
+                        );
                     });
 
                     /* Filter lists by orgunit */
@@ -323,16 +335,27 @@
                     };
                 });
                
-                create_aliases(new_aliases, function(forwards) {
-                    var aliases_formatted = _.map(forwards, function(el) { return el.destination; }).join(', ');
-                    notify('Oppdatert '+ forwards[0].source, 'La til epostene: ' + aliases_formatted + '.', 'success');
-                    textarea.val('');
-                    list_el.find('.email-counter').text('');
-                    // TODO: Update the list.
-                    //var new_list =_.groupBy(forwards, function(fwd) { return fwd.source; });
-                    //var added_list_html = nunjucks.render('list.html', { lists: new_list });
-                    //forwards_container.prepend(added_list_html);
-                });
+                create_aliases(
+                    new_aliases,
+                    function(forwards) {
+                        var aliases_formatted = _.map(forwards, function(el) { return el.destination; }).join(', ');
+                        notify('Oppdatert '+ forwards[0].source, 'La til epostene: ' + aliases_formatted + '.', 'success');
+                        textarea.val('');
+                        list_el.find('.email-counter').text('');
+                        // TODO: Update the list.
+                        //var new_list =_.groupBy(forwards, function(fwd) { return fwd.source; });
+                        //var added_list_html = nunjucks.render('list.html', { lists: new_list });
+                        //forwards_container.prepend(added_list_html);
+                    },
+                    function(xhr) {
+                        var error = xhr.responseJSON;
+                        var msg = '';
+                        if( error && error[0].non_field_errors) {
+                            msg = error[0].non_field_errors[0];
+                        }
+                        notify('Ikke oppdatert', 'Kunne ikke legge til nye eposter.\n' + msg, 'error');
+                    }
+                );
             });
             forwards_container.on('keyup', '.js-add-list-textarea', update_num_emails);
 
