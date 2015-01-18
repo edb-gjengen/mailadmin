@@ -1,8 +1,10 @@
 import requests
 from django.conf import settings
 import logging
+from requests.exceptions import ConnectionError
+from requests.auth import HTTPBasicAuth
 from rest_framework import exceptions
-
+from rest_framework import status
 logger = logging.getLogger(__name__)
 
 
@@ -31,21 +33,34 @@ class DjangoPostfixDovecotAPI(object):
         headers = {'content-type': 'application/json'}
         url = "{}{}".format(self.base_url, path)
 
-        r = requests.request(
-            method,
-            url,
-            params=params,
-            auth=requests.auth.HTTPBasicAuth(self.username, self.password),
-            json=json,
-            headers=headers)
+        try:
+            r = requests.request(
+                method,
+                url,
+                params=params,
+                auth=HTTPBasicAuth(self.username, self.password),
+                json=json,
+                headers=headers)
+        except ConnectionError as e:
+            msg = 'mxapi at {} unavailable {}'.format(url, unicode(e))
+            logger.warning(msg)
+            raise DPDAPIException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail={'error': msg})
 
         try:
             r.raise_for_status()
         except requests.exceptions.RequestException as e:
             logger.warning('mxapi errored {}'.format(e.response))
-            raise DPDAPIException(status_code=e.response.status_code, detail=e.response.json())
+            try:
+                raise DPDAPIException(status_code=e.response.status_code, detail=e.response.json())
+            except ValueError:
+                raise DPDAPIException(status_code=e.response.status_code, detail='mxapi fatal error')
 
-        return r.json()
+        try:
+            ret = r.json()
+        except ValueError:
+            return None
+
+        return ret
 
     def create_aliases(self, aliases):
         return self._api('POST', '/aliases/create_bulk/', json=aliases)

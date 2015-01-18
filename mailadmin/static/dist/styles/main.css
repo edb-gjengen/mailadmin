@@ -6677,7 +6677,7 @@ html > body > .ui-pnotify {
   padding-right: 16px;
 }
 
-.forwards-container .badge {
+.forwards-container .badge-list-total {
   float: right;
   margin-right: 14px;
 }

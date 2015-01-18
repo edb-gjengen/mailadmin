@@ -1,6 +1,14 @@
 (function() {
     'use strict';
     /*global moment, jQuery, document, _, $, window, List */
+    var api_urls = {
+        aliases: '/api/aliases/',
+        ou_list: '/api/orgunits/',
+        me: '/api/me/',
+        email_domain: '/api/emaildomain/'
+    };
+    var csrf_token;
+
     function getParameterByName(name) {
         name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
         var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
@@ -37,7 +45,7 @@
 
         /* Filter lists */
         var re_term = new RegExp(term);
-        $(".fwdlist").each(function() {
+        $(".fwdlist").not('.new-list').each(function() {
             var cur_name = $(this).attr('data-list-name');
             var members = $(this).find('.member');
             var hits = _.filter(members, function(el) {
@@ -61,15 +69,32 @@
             animate_speed: 'fast'
         });
     }
+    function update_num_emails(event) {
+        var el = $(event.target);
+        var emails = parseEmails(el.val());
+        var list_name = el.attr('data-list-name');
+        var counter = $('.fwdlist[data-list-name="'+ list_name +'"] .email-counter');
+
+        if(emails.length > 0) {
+            counter.text(emails.length);
+        } else {
+            counter.text('');
+        }
+    }
+    function create_aliases(new_aliases, onSuccess) {
+        $.ajax({
+            url: api_urls.aliases,
+            type: 'POST',
+            headers: {'X-CSRFToken': csrf_token},
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(new_aliases),
+            success: onSuccess
+        });
+    }
 
     $(document).ready(function() {
-        var csrf_token = $('meta[name=x-csrf-token]').attr('content');
-        var api_urls = {
-            aliases: '/api/aliases/',
-            ou_list: '/api/orgunits/',
-            me: '/api/me/',
-            email_domain: '/api/emaildomain/'
-        };
+        csrf_token = $('meta[name=x-csrf-token]').attr('content');
         var forwards_container = $(".forwards-container");
         nunjucks.configure({ autoescape: true });
 
@@ -90,7 +115,6 @@
 
                 $.getJSON(api_urls.email_domain, function(email_domain) {
                     email_domain = email_domain.domain;
-                    console.log(email_domain);
 
                     /* New list */
                     var new_list_html = nunjucks.render('new_list.html', {
@@ -118,17 +142,8 @@
                         var prefix = $(this).parent().attr('data-value');
                         $('.new-list .prefix-btn').html(prefix+' <span class="caret"></span>');
                     });
-                    // TODO put this in a function with selector as argument
-                    $('.new-list textarea').on('keyup', function() {
-                        var text = $(this).val();
-                        var emails = parseEmails(text);
+                    $('.new-list textarea').on('keyup', update_num_emails);
 
-                        if(emails.length > 0) {
-                            $('.new-list .email-counter').text(emails.length);
-                        } else {
-                            $('.new-list .email-counter').text('');
-                        }
-                    });
                     $('.js-add-list').on('click', function(e) {
                         e.preventDefault();
                         /* Validate */
@@ -155,25 +170,16 @@
                                 'domain': email_domain.id
                             };
                         });
-                        console.log(new_aliases);
-                        $.ajax({
-                            url: api_urls.aliases,
-                            type: 'POST',
-                            headers: {'X-CSRFToken': csrf_token},
-                            dataType: 'json',
-                            contentType: "application/json; charset=utf-8",
-                            data: JSON.stringify(new_aliases),
-
-                        }).done(function(resp) {
-                            console.log(resp);
-                            notify('Lagt til', 'Ny liste: ' + source + ' lagt til', 'success');
+                       
+                        create_aliases(new_aliases, function(forwards) {
+                            notify('Lagt til', 'Ny liste: ' + forwards[0].source + ' lagt til', 'success');
                             $('.new-list textarea').val('');
                             $('.new-list .js-new-list-name').val('');
-                            // FIXME: Existing list?
-                            var added_list_html = nunjucks.render('list.html', { lists: new_aliases });
-                            forwards_container.prepend(added_list_html);
+                            // TODO: Existing list?
+                            //var new_list =_.groupBy(forwards, function(fwd) { return fwd.source; });
+                            //var added_list_html = nunjucks.render('list.html', { lists: new_list });
+                            //forwards_container.prepend(added_list_html);
                         });
-
                     });
 
                     /* Filter lists by orgunit */
@@ -256,22 +262,36 @@
             /* Delete selected */
            forwards_container.on('click', '.js-del-selected', function() {
                 var list_name = $(this).attr('data-delete-list-name');
-                var checked = $('[data-list-name="'+list_name+'"] [name="fwd-delete"]:checked');
+                var list_el = $('.fwdlist[data-list-name="'+list_name+'"]');
+                var checked = list_el.find('[name="fwd-delete"]:checked');
+
                 var delete_these = _.map(checked, function(el) {
-                    return $(el).val();
+                    return {
+                        'source': $(el).attr('data-source'),
+                        'destination': $(el).attr('data-destination'),
+                        'domain': parseInt($(el).attr('data-domain'), 10),
+                    };
                 });
+                function success(res){
+                    checked.closest('tr').remove();
+                    /* remove list if no more rows */
+                    if(list_el.find('.alias-row').length === 0) {
+                        list_el.remove();
+                    }
+                }
+                function error(res) {
+                    notify('Kunne ikke slette', res.detail, 'error');
+                }
                 var data = {
                     type: 'DELETE',
                     headers: {'X-CSRFToken': csrf_token},
                     url: api_urls.aliases,
-                    data: delete_these,
-                    dataType: 'json'
+                    data: JSON.stringify(delete_these),
+                    contentType: "application/json; charset=utf-8",
+                    success: success,
+                    error: error
                 };
-                $.ajax(data, function(){
-                    // Success
-                    checked.closest('tr').remove();
-                    // TODO remove list if no more rows
-                });
+                $.ajax(data);
             });
 
             /* Toggles emails textarea */
@@ -284,8 +304,35 @@
             /* Add emails to current list */
             forwards_container.on('click', '.js-new-email', function(e) {
                 e.preventDefault();
-                // TODO refactor logic from new list and add here
+                var source = $(this).attr('data-list-name');
+                var textarea = $('textarea[data-list-name="'+source+'"]');
+                var emails = parseEmails(textarea.val());
+                if(emails.length === 0) {
+                    notify('Ny epostliste', 'Ingen eposter i epost-feltet...', 'error');
+                    return;
+                }
+                var list_el = $('.fwdlist[data-list-name="'+source+'"]');
+                var new_aliases = {};
+                new_aliases = _.map(emails, function(el) {
+                    return {
+                        'source': source,
+                        'destination': el,
+                        'domain': parseInt(list_el.attr('data-domain'), 10)
+                    };
+                });
+               
+                create_aliases(new_aliases, function(forwards) {
+                    var aliases_formatted = _.map(forwards, function(el) { return el.destination; }).join(', ');
+                    notify('Oppdatert '+ forwards[0].source, 'La til epostene: ' + aliases_formatted + '.', 'success');
+                    textarea.val('');
+                    list_el.find('.email-counter').text('');
+                    // TODO: Update the list.
+                    //var new_list =_.groupBy(forwards, function(fwd) { return fwd.source; });
+                    //var added_list_html = nunjucks.render('list.html', { lists: new_list });
+                    //forwards_container.prepend(added_list_html);
+                });
             });
+            forwards_container.on('keyup', '.js-add-list-textarea', update_num_emails);
 
             /* New list toggle display */
             $('.new-list-btn').on('click', function() {

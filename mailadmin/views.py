@@ -93,13 +93,7 @@ class AliasesView(views.APIView):
         if not aliases.is_valid():
             return Response(aliases.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            # FIXME: not tested
-            # res = self._api.delete_aliases(aliases)
-            res = {'errors': 'Not implemented'}
-        except exceptions.RequestException as e:
-            logger.warning('mxapi errored {}'.format(e.strerror))
-            return Response({'error': e.strerror}, status=status.HTTP_400_BAD_REQUEST)
+        res = self._api.delete_aliases(aliases.data)
 
         return Response(res)
 
