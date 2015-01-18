@@ -273,11 +273,13 @@
                     };
                 });
                 function success(res){
+                    var checked_formatted = _.map(delete_these, function(el) { return el.destination; }).join(', ');
                     checked.closest('tr').remove();
                     /* remove list if no more rows */
                     if(list_el.find('.alias-row').length === 0) {
                         list_el.remove();
                     }
+                    notify('Slettet', checked_formatted, 'success');
                 }
                 function error(res) {
                     notify('Kunne ikke slette', res.detail, 'error');
