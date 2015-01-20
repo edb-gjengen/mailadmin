@@ -5,7 +5,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 import logging
-from requests import exceptions
 from rest_framework import viewsets, views
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
@@ -50,9 +49,9 @@ def logout(request):
 class AliasesView(views.APIView):
     """ List, create and delete aliases from django-postfix-dovecot-api """
     _api = DjangoPostfixDovecotAPI()
-    permission_classes = (SourcePrefixOwner,)
+    permission_classes = (IsAuthenticated, SourcePrefixOwner,)
 
-    def get(self, request):
+    def get_groups(self, request):
         group_filter = request.QUERY_PARAMS.get('groups', None)
         if group_filter is None:
             my_groups = request.user.groups.all()
@@ -64,13 +63,24 @@ class AliasesView(views.APIView):
                 group_filter = [group_filter]
             my_groups = request.user.groups.filter(pk__in=group_filter)
 
+        return my_groups
+
+    def get_user_prefixes(self, request):
+        my_groups = self.get_groups(request)
+
         # Look for mailinglist prefixes
         orgunits = OrgUnit.objects.exclude(prefix__isnull=True).exclude(is_active=False).distinct()
         if not request.user.is_superuser:
             orgunits = orgunits.filter(admin_groups__in=my_groups)
-
         my_prefixes = orgunits.values_list('prefix', flat=True)
+
+        return my_prefixes
+
+    def get(self, request):
+        my_prefixes = self.get_user_prefixes(request)
+
         # Prepare regular expression
+        # FIXME: Move to method on orgunit manager
         regexp = '|'.join(['^{0}-|^{0}@'.format(p) for p in my_prefixes])
         if len(my_prefixes) == 0:
             return Response({'result': 'No results'})  # Need at least one
