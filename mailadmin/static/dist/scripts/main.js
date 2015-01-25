@@ -168,6 +168,7 @@
 
         /* Lists view (home) */
         if( $('body.home').length ) {
+            $('.js-lists-filter-field').focus();
             /* Load orgunits */
             $.getJSON(api_urls.ou_list, function(data) {
                 data = setPrefixesRegex(data);
@@ -392,6 +393,8 @@
                 e.preventDefault();
                 var row = $(this).closest('tbody').find('.textarea-row');
                 row.toggleClass('visible');
+
+                $(this).closest('tbody').find('textarea').focus();
             });
 
             /* Add emails to current list */
