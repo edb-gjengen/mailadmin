@@ -9,7 +9,8 @@ def normalize_prefixes(apps, schema_editor):
     OrgUnit = apps.get_model("mailadmin", "OrgUnit")
 
     for ou in OrgUnit.objects.all():
-        Prefix.objects.create(name=ou.prefix, orgunit=ou)
+        if ou.prefix:
+            Prefix.objects.create(name=ou.prefix, orgunit=ou)
 
 
 def noop(*args, **kwargs):

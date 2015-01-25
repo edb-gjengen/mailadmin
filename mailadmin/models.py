@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.contrib.auth.models import Group
 from django.db import models
 
@@ -27,9 +28,12 @@ class PrefixQueryset(models.QuerySet):
 
 class Prefix(models.Model):
     def __unicode__(self):
-        return self.name
+        return self.name or ''
 
     name = models.CharField(max_length=500, blank=True, null=True)
     orgunit = models.ForeignKey('mailadmin.OrgUnit', related_name='prefixes')
 
     objects = PrefixQueryset.as_manager()
+
+    class Meta:
+        verbose_name_plural = 'prefixes'
