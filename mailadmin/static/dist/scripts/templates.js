@@ -184,31 +184,65 @@ var colno = null;
 var output = "";
 try {
 output += "<div class=\"panel panel-default\">\n  <div class=\"panel-heading\"><span class=\"glyphicon glyphicon-list-alt icon-faded\" aria-hidden=\"true\"></span> <span class=\"js-new-list-preview\">Ny liste</span></div>\n  <div class=\"panel-body\">\n  \t<div class=\"input-group\">\n\t\t<span class=\"input-group-btn\">\n\t\t\t<button type=\"button\" class=\"btn btn-default prefix-btn dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">";
-output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "orgunits")),0, env.autoesc)),"prefix", env.autoesc), env.autoesc);
-output += "- <span class=\"caret\"></span></button>\n\t\t\t<ul class=\"dropdown-menu prefix-select\">\n\t\t\t";
+output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "orgunits")),0, env.autoesc)),"prefixes", env.autoesc)),0, env.autoesc), env.autoesc);
+output += "- <span class=\"caret\"></span></button>\n\t\t\t<ul class=\"dropdown-menu prefix-select\">\n            ";
+var t_1;
+t_1 = true;
+frame.set("first", t_1, true);
+if(!frame.parent) {
+context.setVariable("first", t_1);
+context.addExport("first");
+}
+output += "\n\t\t\t";
 frame = frame.push();
-var t_3 = runtime.contextOrFrameLookup(context, frame, "orgunits");
-if(t_3) {var t_2 = t_3.length;
-for(var t_1=0; t_1 < t_3.length; t_1++) {
-var t_4 = t_3[t_1];
-frame.set("ou", t_4);
-frame.set("loop.index", t_1 + 1);
-frame.set("loop.index0", t_1);
-frame.set("loop.revindex", t_2 - t_1);
-frame.set("loop.revindex0", t_2 - t_1 - 1);
-frame.set("loop.first", t_1 === 0);
-frame.set("loop.last", t_1 === t_2 - 1);
-frame.set("loop.length", t_2);
-output += "\n\t\t\t\t<li";
-if(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "loop")),"first", env.autoesc)) {
+var t_4 = runtime.contextOrFrameLookup(context, frame, "orgunits");
+if(t_4) {var t_3 = t_4.length;
+for(var t_2=0; t_2 < t_4.length; t_2++) {
+var t_5 = t_4[t_2];
+frame.set("ou", t_5);
+frame.set("loop.index", t_2 + 1);
+frame.set("loop.index0", t_2);
+frame.set("loop.revindex", t_3 - t_2);
+frame.set("loop.revindex0", t_3 - t_2 - 1);
+frame.set("loop.first", t_2 === 0);
+frame.set("loop.last", t_2 === t_3 - 1);
+frame.set("loop.length", t_3);
+output += "\n                ";
+frame = frame.push();
+var t_8 = runtime.memberLookup((t_5),"prefixes", env.autoesc);
+if(t_8) {var t_7 = t_8.length;
+for(var t_6=0; t_6 < t_8.length; t_6++) {
+var t_9 = t_8[t_6];
+frame.set("prefix", t_9);
+frame.set("loop.index", t_6 + 1);
+frame.set("loop.index0", t_6);
+frame.set("loop.revindex", t_7 - t_6);
+frame.set("loop.revindex0", t_7 - t_6 - 1);
+frame.set("loop.first", t_6 === 0);
+frame.set("loop.last", t_6 === t_7 - 1);
+frame.set("loop.length", t_7);
+output += "\n\t\t\t\t    <li";
+if(runtime.contextOrFrameLookup(context, frame, "first")) {
 output += " class=\"active\"";
+var t_10;
+t_10 = false;
+frame.set("first", t_10, true);
+if(!frame.parent) {
+context.setVariable("first", t_10);
+context.addExport("first");
+}
 ;
 }
 output += " data-value=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_4),"prefix", env.autoesc), env.autoesc);
+output += runtime.suppressValue(t_9, env.autoesc);
 output += "-\"><a href=\"#\">";
-output += runtime.suppressValue(runtime.memberLookup((t_4),"prefix", env.autoesc), env.autoesc);
-output += "-</a></li>\n\t\t\t";
+output += runtime.suppressValue(t_9, env.autoesc);
+output += "-</a></li>\n\t\t\t    ";
+;
+}
+}
+frame = frame.pop();
+output += "\n\t\t\t";
 ;
 }
 }

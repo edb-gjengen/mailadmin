@@ -3,10 +3,13 @@
   <div class="panel-body">
   	<div class="input-group">
 		<span class="input-group-btn">
-			<button type="button" class="btn btn-default prefix-btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{orgunits[0].prefix}}- <span class="caret"></span></button>
+			<button type="button" class="btn btn-default prefix-btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{ orgunits[0].prefixes[0] }}- <span class="caret"></span></button>
 			<ul class="dropdown-menu prefix-select">
+            {% set first = true %}
 			{% for ou in orgunits %}
-				<li{% if loop.first %} class="active"{% endif %} data-value="{{ ou.prefix }}-"><a href="#">{{ou.prefix}}-</a></li>
+                {% for prefix in ou.prefixes %}
+				    <li{% if first %} class="active"{% set first = false %}{% endif %} data-value="{{ prefix }}-"><a href="#">{{prefix}}-</a></li>
+			    {% endfor %}
 			{% endfor %}
 			</ul>
 		</span>
