@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from mailadmin.api import DjangoPostfixDovecotAPI
-from mailadmin.models import OrgUnit
+from mailadmin.models import OrgUnit, Prefix
 from mailadmin.serializers import UserSerializer, OrgUnitSerializer, AliasSerializer
 from mailadmin.permissions import SourcePrefixOwner
 
@@ -69,10 +69,11 @@ class AliasesView(views.APIView):
         my_groups = self.get_groups(request)
 
         # Look for mailinglist prefixes
-        orgunits = OrgUnit.objects.exclude(prefix__isnull=True).exclude(is_active=False).distinct()
+        orgunits = OrgUnit.objects.exclude(is_active=False).distinct()
         if not request.user.is_superuser:
             orgunits = orgunits.filter(admin_groups__in=my_groups)
-        my_prefixes = orgunits.values_list('prefix', flat=True)
+
+        my_prefixes = Prefix.objects.filter(orgunit=orgunits)
 
         return my_prefixes
 
@@ -80,12 +81,11 @@ class AliasesView(views.APIView):
         my_prefixes = self.get_user_prefixes(request)
 
         # Prepare regular expression
-        # FIXME: Move to method on orgunit manager
-        regexp = '|'.join(['^{0}-|^{0}@'.format(p) for p in my_prefixes])
+        regex = my_prefixes.as_regex()
         if len(my_prefixes) == 0:
             return Response({'result': 'No results'})  # Need at least one
 
-        res = self._api.list_aliases_regex(regexp)
+        res = self._api.list_aliases_regex(regex)
 
         return Response(res)
 
@@ -123,12 +123,11 @@ class MyOrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        orgunits = OrgUnit.objects.exclude(prefix__isnull=True).exclude(is_active=False).distinct()
+        orgunits = OrgUnit.objects.exclude(prefixes__isnull=True).exclude(is_active=False).distinct()
         if self.request.user.is_superuser:
             return orgunits
 
-        group_ids = self.request.user.groups.values('id')
-        return orgunits.filter(admin_groups__in=group_ids)
+        return orgunits.filter(admin_groups=self.request.user.groups)
 
 
 class OrgUnitViewSet(viewsets.ReadOnlyModelViewSet):

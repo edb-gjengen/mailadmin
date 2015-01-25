@@ -6753,6 +6753,18 @@ html > body > .ui-pnotify {
   margin-bottom: 10px;
 }
 
+.highlight .alias:before {
+  width: 7px;
+  height: 7px;
+  border-radius: 50% 50%;
+  background-color: #00d000;
+  content: '';
+  display: inline-block;
+  position: absolute;
+  left: 20px;
+  margin-top: 7px;
+}
+
 /* Responsive fixes */
 @media (max-width: 500px) {
   .panel-heading {
@@ -6766,6 +6778,10 @@ html > body > .ui-pnotify {
 
   td {
     font-size: 13px;
+  }
+
+  .highlight .alias:before {
+    margin-top: 5px;
   }
 }
 .love {

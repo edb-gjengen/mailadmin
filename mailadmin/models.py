@@ -7,7 +7,6 @@ class OrgUnit(models.Model):
         return self.name
 
     name = models.CharField(max_length=500)
-    prefix = models.CharField(max_length=256, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     admin_groups = models.ManyToManyField(Group, null=True, blank=True, related_name='admin_orgunits')
     member_groups = models.ManyToManyField(Group, null=True, blank=True, related_name='member_orgunits')
@@ -17,3 +16,20 @@ class OrgUnit(models.Model):
 
     class Meta:
         ordering = ['name']
+
+
+class PrefixQueryset(models.QuerySet):
+
+    def as_regex(self):
+        prefixes = self.values_list('name', flat=True)
+        return '|'.join(['^{0}-|^{0}@'.format(p) for p in prefixes])
+
+
+class Prefix(models.Model):
+    def __unicode__(self):
+        return self.name
+
+    name = models.CharField(max_length=500, blank=True, null=True)
+    orgunit = models.ForeignKey('mailadmin.OrgUnit', related_name='prefixes')
+
+    objects = PrefixQueryset.as_manager()

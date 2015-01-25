@@ -6,7 +6,8 @@
     "jquery": "~1.11.0",
     "underscore": "~1.7.0",
     "nunjucks": "~1.1.0",
-    "pnotify": "~2.0.1"
+    "pnotify": "~2.0.1",
+    "query-string": "~1.0.0"
   },
   "devDependencies": {}
 }

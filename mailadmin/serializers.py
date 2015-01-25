@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
 from mailadmin.models import OrgUnit
+from rest_framework.relations import SlugRelatedField
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -22,6 +23,10 @@ class UserSerializer(serializers.ModelSerializer):
 class OrgUnitSerializer(serializers.ModelSerializer):
     admin_groups = GroupSerializer(many=True)
     member_groups = GroupSerializer(many=True)
+    prefixes = SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='name')
 
     class Meta:
         model = OrgUnit

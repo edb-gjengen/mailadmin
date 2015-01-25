@@ -27,10 +27,9 @@ class SourcePrefixOwner(permissions.BasePermission):
             return False
 
         # Prepare regular expression
-        regexp = '|'.join(['^{0}-|^{0}@'.format(p) for p in my_prefixes])
+        regexp = my_prefixes.as_regex()
         # All source-adresses should match the prefix regexp
         for alias in serializer.initial_data:
-            print alias, re.search(regexp, alias.get('source', ''))
             if re.search(regexp, alias.get('source', '')) is None:
                 return False
 
