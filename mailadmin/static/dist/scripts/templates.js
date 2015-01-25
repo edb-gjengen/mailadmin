@@ -26,6 +26,59 @@ root: root
 })();
 })();
 
+(function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["aliases.html"] = (function() {function root(env, context, frame, runtime, cb) {
+var lineno = null;
+var colno = null;
+var output = "";
+try {
+frame = frame.push();
+var t_3 = runtime.contextOrFrameLookup(context, frame, "aliases");
+if(t_3) {var t_2 = t_3.length;
+for(var t_1=0; t_1 < t_3.length; t_1++) {
+var t_4 = t_3[t_1];
+frame.set("alias", t_4);
+frame.set("loop.index", t_1 + 1);
+frame.set("loop.index0", t_1);
+frame.set("loop.revindex", t_2 - t_1);
+frame.set("loop.revindex0", t_2 - t_1 - 1);
+frame.set("loop.first", t_1 === 0);
+frame.set("loop.last", t_1 === t_2 - 1);
+frame.set("loop.length", t_2);
+output += "\n<tr class=\"alias-row\">\n    <td class=\"alias\"><span class=\"js-destination\" title=\"Lagt til ";
+output += runtime.suppressValue(env.getFilter("datefromnow").call(context, runtime.memberLookup((t_4),"created", env.autoesc)), env.autoesc);
+output += " (";
+output += runtime.suppressValue(env.getFilter("date").call(context, runtime.memberLookup((t_4),"created", env.autoesc),"LLLL"), env.autoesc);
+output += ")\">";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"destination", env.autoesc), env.autoesc);
+output += "</span></td>\n    <td class=\"del-cell\">\n        <label class=\"del-label\" for=\"";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"id", env.autoesc), env.autoesc);
+output += "\"><input id=\"";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"id", env.autoesc), env.autoesc);
+output += "\" type=\"checkbox\" name='fwd-delete' value=\"";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"id", env.autoesc), env.autoesc);
+output += "\" data-source=\"";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"source", env.autoesc), env.autoesc);
+output += "\" data-destination=\"";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"destination", env.autoesc), env.autoesc);
+output += "\" data-domain=\"";
+output += runtime.suppressValue(runtime.memberLookup((t_4),"domain", env.autoesc), env.autoesc);
+output += "\"/></label>\n    </td>\n</tr>\n";
+;
+}
+}
+frame = frame.pop();
+cb(null, output);
+;
+} catch (e) {
+  cb(runtime.handleError(e, lineno, colno));
+}
+}
+return {
+root: root
+};
+})();
+})();
+
 (function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["list.html"] = (function() {function root(env, context, frame, runtime, cb) {
 var lineno = null;
 var colno = null;
@@ -57,42 +110,11 @@ output += runtime.suppressValue(t_4, env.autoesc);
 output += " <span class=\"badge badge-list-total\">";
 output += runtime.suppressValue(env.getFilter("length").call(context, t_5), env.autoesc);
 output += "</span></div>\n\t\t<table class=\"table table-condensed\">\n\t        <tbody>\n\t        \t<!-- Aliases -->\n\t\t\t\t";
-frame = frame.push();
-var t_8 = t_5;
-if(t_8) {var t_7 = t_8.length;
-for(var t_6=0; t_6 < t_8.length; t_6++) {
-var t_9 = t_8[t_6];
-frame.set("alias", t_9);
-frame.set("loop.index", t_6 + 1);
-frame.set("loop.index0", t_6);
-frame.set("loop.revindex", t_7 - t_6);
-frame.set("loop.revindex0", t_7 - t_6 - 1);
-frame.set("loop.first", t_6 === 0);
-frame.set("loop.last", t_6 === t_7 - 1);
-frame.set("loop.length", t_7);
-output += "\n\t\t\t\t<tr class=\"alias-row\">\n\t\t\t\t\t<td class=\"alias\"><span class=\"js-destination\" title=\"Lagt til ";
-output += runtime.suppressValue(env.getFilter("datefromnow").call(context, runtime.memberLookup((t_9),"created", env.autoesc)), env.autoesc);
-output += " (";
-output += runtime.suppressValue(env.getFilter("date").call(context, runtime.memberLookup((t_9),"created", env.autoesc),"LLLL"), env.autoesc);
-output += ")\">";
-output += runtime.suppressValue(runtime.memberLookup((t_9),"destination", env.autoesc), env.autoesc);
-output += "</span></td>\n\t\t\t\t\t<td class=\"del-cell\">\n\t\t\t\t\t\t<label class=\"del-label\" for=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_9),"id", env.autoesc), env.autoesc);
-output += "\"><input id=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_9),"id", env.autoesc), env.autoesc);
-output += "\" type=\"checkbox\" name='fwd-delete' value=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_9),"id", env.autoesc), env.autoesc);
-output += "\" data-source=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_9),"source", env.autoesc), env.autoesc);
-output += "\" data-destination=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_9),"destination", env.autoesc), env.autoesc);
-output += "\" data-domain=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_9),"domain", env.autoesc), env.autoesc);
-output += "\"/></label>\n\t\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t\t";
-;
-}
-}
-frame = frame.pop();
+env.getTemplate("aliases.html", function(t_8,t_6) {
+if(t_8) { cb(t_8); return; }
+t_6.render(context.getVariables(), frame.push(), function(t_9,t_7) {
+if(t_9) { cb(t_9); return; }
+output += t_7
 output += "\n\t\t\t\t<!-- Actions: Add/Remove -->\n\t\t\t\t<tr class=\"action-row\">\n\t\t\t\t\t<td>\n\t\t\t\t\t\t<a href=\"#\" class=\"link-add js-toggle-email-textarea\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span> Legg til</a>\n\t\t\t\t\t</td>\n\t\t\t\t\t<td>\n\t\t\t\t\t\t<a href=\"#\" class=\"link-del js-del-selected\" type=\"button\" data-delete-list-name=\"";
 output += runtime.suppressValue(t_4, env.autoesc);
 output += "\"><span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></span> Slett</a>\n\t\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t\t<tr class=\"textarea-row\">\n\t\t\t\t\t<td colspan=\"2\">\n\t\t\t\t\t\t<h4>Eposter <span class=\"badge email-counter\"></span></h4>\n\t    \t\t\t\t<textarea class=\"form-control js-add-list-textarea\" data-list-name=\"";
@@ -100,7 +122,7 @@ output += runtime.suppressValue(t_4, env.autoesc);
 output += "\" placeholder=\"asdf@studentersamfundet.no, qwerty@studentersamfundet.no f.eks. Klipp og lim så mye du orker\" rows=\"4\"></textarea>\n\t    \t\t\t\t<button type=\"button\" class=\"btn btn-primary btn-add-list js-new-email\" data-list-name=\"";
 output += runtime.suppressValue(t_4, env.autoesc);
 output += "\"><span class=\"glyphicon glyphicon-plus js-new-email\" aria-hidden=\"true\"></span> Legg til</button>\n\t    \t\t\t</td>\n    \t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t\t<div class=\"result-alert\"></div>\n\t</div>\n</div>\n";
-;
+})});
 }
 } else {
 t_1 = -1;
@@ -126,42 +148,11 @@ output += runtime.suppressValue(t_10, env.autoesc);
 output += " <span class=\"badge badge-list-total\">";
 output += runtime.suppressValue(env.getFilter("length").call(context, t_11), env.autoesc);
 output += "</span></div>\n\t\t<table class=\"table table-condensed\">\n\t        <tbody>\n\t        \t<!-- Aliases -->\n\t\t\t\t";
-frame = frame.push();
-var t_14 = t_11;
-if(t_14) {var t_13 = t_14.length;
-for(var t_12=0; t_12 < t_14.length; t_12++) {
-var t_15 = t_14[t_12];
-frame.set("alias", t_15);
-frame.set("loop.index", t_12 + 1);
-frame.set("loop.index0", t_12);
-frame.set("loop.revindex", t_13 - t_12);
-frame.set("loop.revindex0", t_13 - t_12 - 1);
-frame.set("loop.first", t_12 === 0);
-frame.set("loop.last", t_12 === t_13 - 1);
-frame.set("loop.length", t_13);
-output += "\n\t\t\t\t<tr class=\"alias-row\">\n\t\t\t\t\t<td class=\"alias\"><span class=\"js-destination\" title=\"Lagt til ";
-output += runtime.suppressValue(env.getFilter("datefromnow").call(context, runtime.memberLookup((t_15),"created", env.autoesc)), env.autoesc);
-output += " (";
-output += runtime.suppressValue(env.getFilter("date").call(context, runtime.memberLookup((t_15),"created", env.autoesc),"LLLL"), env.autoesc);
-output += ")\">";
-output += runtime.suppressValue(runtime.memberLookup((t_15),"destination", env.autoesc), env.autoesc);
-output += "</span></td>\n\t\t\t\t\t<td class=\"del-cell\">\n\t\t\t\t\t\t<label class=\"del-label\" for=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_15),"id", env.autoesc), env.autoesc);
-output += "\"><input id=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_15),"id", env.autoesc), env.autoesc);
-output += "\" type=\"checkbox\" name='fwd-delete' value=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_15),"id", env.autoesc), env.autoesc);
-output += "\" data-source=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_15),"source", env.autoesc), env.autoesc);
-output += "\" data-destination=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_15),"destination", env.autoesc), env.autoesc);
-output += "\" data-domain=\"";
-output += runtime.suppressValue(runtime.memberLookup((t_15),"domain", env.autoesc), env.autoesc);
-output += "\"/></label>\n\t\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t\t";
-;
-}
-}
-frame = frame.pop();
+env.getTemplate("aliases.html", function(t_14,t_12) {
+if(t_14) { cb(t_14); return; }
+t_12.render(context.getVariables(), frame.push(), function(t_15,t_13) {
+if(t_15) { cb(t_15); return; }
+output += t_13
 output += "\n\t\t\t\t<!-- Actions: Add/Remove -->\n\t\t\t\t<tr class=\"action-row\">\n\t\t\t\t\t<td>\n\t\t\t\t\t\t<a href=\"#\" class=\"link-add js-toggle-email-textarea\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span> Legg til</a>\n\t\t\t\t\t</td>\n\t\t\t\t\t<td>\n\t\t\t\t\t\t<a href=\"#\" class=\"link-del js-del-selected\" type=\"button\" data-delete-list-name=\"";
 output += runtime.suppressValue(t_10, env.autoesc);
 output += "\"><span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></span> Slett</a>\n\t\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t\t<tr class=\"textarea-row\">\n\t\t\t\t\t<td colspan=\"2\">\n\t\t\t\t\t\t<h4>Eposter <span class=\"badge email-counter\"></span></h4>\n\t    \t\t\t\t<textarea class=\"form-control js-add-list-textarea\" data-list-name=\"";
@@ -169,7 +160,7 @@ output += runtime.suppressValue(t_10, env.autoesc);
 output += "\" placeholder=\"asdf@studentersamfundet.no, qwerty@studentersamfundet.no f.eks. Klipp og lim så mye du orker\" rows=\"4\"></textarea>\n\t    \t\t\t\t<button type=\"button\" class=\"btn btn-primary btn-add-list js-new-email\" data-list-name=\"";
 output += runtime.suppressValue(t_10, env.autoesc);
 output += "\"><span class=\"glyphicon glyphicon-plus js-new-email\" aria-hidden=\"true\"></span> Legg til</button>\n\t    \t\t\t</td>\n    \t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t\t<div class=\"result-alert\"></div>\n\t</div>\n</div>\n";
-;
+})});
 }
 }
 }

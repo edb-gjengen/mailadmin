@@ -31,7 +31,7 @@
         return _.unique(emails);
     }
 
-    function set_query_string(obj) {
+    function setQueryString(obj) {
         var qs = '';
         if(obj !== null) {
             qs = '?' + queryString.stringify(obj);
@@ -39,7 +39,7 @@
         window.history.pushState(null, null, '/lists/'+qs);
     }
 
-    function filter_lists(query_term, with_members) {
+    function filterLists(query_term, with_members) {
         var lists = $(".fwdlist").not('.new-list');
         if($.trim(query_term) === "") {
             $(lists).find('.alias-row').removeClass('highlight');
@@ -74,14 +74,17 @@
         });
     }
 
-    function filter_lists_by_orgunit(id, prefix) {
-        set_active_org_unit(id);
-        filter_lists(prefix);
+    function filterListsByOrgUnit(id, prefix) {
+        if( !prefix ) {
+            prefix = $('.orgunit-list a[data-id="'+id+'"]').attr('data-prefix');
+        }
+        setActiveOrgUnit(id);
+        filterLists(prefix);
         var query_params = {orgunit: id};
         if(id === "") {
             query_params = null;
         }
-        set_query_string(query_params);
+        setQueryString(query_params);
     }
 
     function notify(title, text, type) {
@@ -94,7 +97,7 @@
             animate_speed: 'fast'
         });
     }
-    function update_num_emails(event) {
+    function updateNumEmails(event) {
         var el = $(event.target);
         var emails = parseEmails(el.val());
         var list_name = el.attr('data-list-name');
@@ -106,7 +109,7 @@
             counter.text('');
         }
     }
-    function create_aliases(new_aliases, onSuccess, onError) {
+    function createAliases(new_aliases, onSuccess, onError) {
         $.ajax({
             url: api_urls.aliases,
             type: 'POST',
@@ -118,7 +121,7 @@
             error: onError
         });
     }
-    function set_active_org_unit(id) {
+    function setActiveOrgUnit(id) {
         /* Reset active */
         $(".orgunit-list li").removeClass('active');
         /* Set current */
@@ -129,7 +132,7 @@
         /* Reset search field */
         $('.js-lists-filter-field').val('');
     }
-    function set_prefixes_regex(ous) {
+    function setPrefixesRegex(ous) {
         ous = _.map(ous, function(ou) {
             var prefixes = _.map(ou.prefixes, function(prefix) {
                 return '^'+ prefix +'-|^'+ prefix +'@';
@@ -141,7 +144,7 @@
 
         return ous;
     }
-    function reset_active_org_unit() {
+    function resetActiveOrgUnit() {
         $(".orgunit-list li").removeClass('active');
         $(".orgunit-list li:first-child").toggleClass('active');
     }
@@ -165,10 +168,10 @@
 
         /* Lists view (home) */
         if( $('body.home').length ) {
+            /* Load orgunits */
             $.getJSON(api_urls.ou_list, function(data) {
-                data = set_prefixes_regex(data);
+                data = setPrefixesRegex(data);
 
-                /* Load orgunit list */
                 var ou_html = nunjucks_env.render('orgunits.html', { orgunits: data });
                 $(".orgunit-list").append(ou_html);
                 var ous_html = nunjucks_env.render('orgunits_select.html', { orgunits: data });
@@ -177,13 +180,14 @@
                 /* If searching then set q */
                 var query_string = queryString.parse(location.search);
                 if(query_string.q) {
-                    reset_active_org_unit();
+                    resetActiveOrgUnit();
                     $('.js-lists-filter-field').val(query_string.q);
                 }
                 if(query_string.orgunit) {
-                    set_active_org_unit(query_string.orgunit);
+                    setActiveOrgUnit(query_string.orgunit);
                 }
 
+                /* Load email domain */
                 $.getJSON(api_urls.email_domain, function(email_domain) {
                     email_domain = email_domain.domain;
 
@@ -193,21 +197,29 @@
                         api_urls: api_urls,
                         email_domain: email_domain
                     });
-
-
                     $('.new-list').html(new_list_html);
+
+                    /* New list: List name (source) */
                     $('.new-list .js-new-list-name').on('keyup', function() {
-                        var new_list_name = $('.new-list .js-new-list-name').val();
+                        var new_list_name = $('.new-list .js-new-list-name').val().trim();
                         if(new_list_name === '') {
-                            new_list_name = 'Ny liste';
-                        } else {
-                            var prefix = $('.new-list .prefix-select .active').attr('data-value');
-                            new_list_name = 'NY: ' + prefix + new_list_name + "@" + email_domain.name;
+                            $('.js-new-list-preview').html('Ny liste');
+                            return;
                         }
-                        $('.js-new-list-preview').text(new_list_name);
+                        var prefix = $('.new-list .prefix-select .active').attr('data-value');
+                        var source = prefix + new_list_name + "@" + email_domain.name;
+                        var label_html = '<span class="label label-success">Ny</span> ';
+                        var existing_list = $('.fwdlist[data-list-name="'+ source +'"]').length;
+
+                        if( existing_list ) {
+                            label_html = '<span class="label label-primary">Eksisterende</span> ';
+                        }
+
+                        new_list_name = label_html + source;
+                        $('.js-new-list-preview').html(new_list_name);
                     });
 
-                    /* Prefix select */
+                    /* New list: Select prefix */
                     $('.new-list .prefix-select a').on('click', function() {
                         $('.new-list .prefix-select a').parent().removeClass('active');
                         $(this).parent().addClass('active');
@@ -215,8 +227,9 @@
                         $('.new-list .prefix-btn').html(prefix+' <span class="caret"></span>');
                     });
 
-                    $('.new-list textarea').on('keyup', update_num_emails);
+                    $('.new-list textarea').on('keyup', updateNumEmails);
 
+                    /* New list: Add list with aliases */
                     $('.js-add-list').on('click', function(e) {
                         e.preventDefault();
                         /* Validate */
@@ -243,16 +256,29 @@
                             };
                         });
                        
-                        create_aliases(
+                        createAliases(
                             new_aliases,
-                            function(forwards) {
-                                notify('Lagt til', 'Ny liste: ' + forwards[0].source + ' lagt til', 'success');
+                            function(aliases) {
                                 $('.new-list textarea').val('');
                                 $('.new-list .js-new-list-name').val('');
-                                // TODO: Existing list?
-                                //var new_list =_.groupBy(forwards, function(fwd) { return fwd.source; });
-                                //var added_list_html = nunjucks.render('list.html', { lists: new_list });
-                                //forwards_container.prepend(added_list_html);
+                                $('.js-new-list-preview').html('Ny liste');
+                                $('.new-list .email-counter').html('');
+                                var list_name = aliases[0].source;
+                                var list_el = $('.fwdlist[data-list-name="'+ list_name +'"]');
+
+                                if(list_el.length) {
+                                    /* Append to existing list */
+                                    notify('Oppdatert', 'Oppdatert: ' + list_name + ' er oppdatert', 'success');
+                                    var list_html = nunjucks_env.render('aliases.html', { 'aliases': aliases });
+                                    list_el.find('tbody .alias-row').last().after(list_html);
+                                    return;
+                                }
+
+                                /* Add new list on top */
+                                notify('Lagt til', 'Ny liste: ' + list_name + ' lagt til', 'success');
+                                var new_list =_.groupBy(aliases, function(alias) { return alias.source; });
+                                var added_list_html = nunjucks_env.render('list.html', { lists: new_list });
+                                forwards_container.prepend(added_list_html);
                             },
                             function(xhr) {
                                 var error = xhr.responseJSON;
@@ -270,12 +296,12 @@
                         e.preventDefault();
                         var id = $(this).attr('data-id');
                         var prefix = $(this).attr('data-prefix');
-                        filter_lists_by_orgunit(id, prefix);
+                        filterListsByOrgUnit(id, prefix);
                     });
                     $(".orgunits-select").on('change', function() {
                         var id = $(this).val();
                         var prefix = $(this).find(':selected').attr('data-prefix');
-                        filter_lists_by_orgunit(id, prefix);
+                        filterListsByOrgUnit(id, prefix);
                     });
                 });
             });
@@ -296,7 +322,8 @@
                     return;
                 }
 
-                var lists = _.groupBy(data, function(alias) { return alias.source; });
+                var lists = _.sortBy(data, function(alias) { return alias.source; });
+                lists = _.groupBy(lists, function(alias) { return alias.source; });
                 var fw_html = nunjucks_env.render('list.html', { lists: lists });
 
                 forwards_container.html(fw_html);
@@ -304,7 +331,10 @@
                 /* Filter lists by search term from query string */
                 var query_string = queryString.parse(location.search);
                 if(query_string.q) {
-                    filter_lists(query_string.q, true);
+                    filterLists(query_string.q, true);
+                }
+                else if(query_string.orgunit) {
+                    filterListsByOrgUnit(query_string.orgunit);
                 }
             });
 
@@ -339,6 +369,7 @@
                     if(list_el.find('.alias-row').length === 0) {
                         list_el.remove();
                     }
+                    list_el.find('.link-del').removeClass('visible');
                     notify('Slettet', checked_formatted, 'success');
                 }
                 function error(res) {
@@ -374,8 +405,7 @@
                     return;
                 }
                 var list_el = $('.fwdlist[data-list-name="'+source+'"]');
-                var new_aliases = {};
-                new_aliases = _.map(emails, function(el) {
+                var new_aliases = _.map(emails, function(el) {
                     return {
                         'source': source,
                         'destination': el,
@@ -383,17 +413,16 @@
                     };
                 });
                
-                create_aliases(
+                createAliases(
                     new_aliases,
-                    function(forwards) {
-                        var aliases_formatted = _.map(forwards, function(el) { return el.destination; }).join(', ');
-                        notify('Oppdatert '+ forwards[0].source, 'La til epostene: ' + aliases_formatted + '.', 'success');
+                    function(aliases) {
+                        var aliases_formatted = _.map(aliases, function(el) { return el.destination; }).join(', ');
+                        notify('Oppdatert '+ aliases[0].source, 'La til epostene: ' + aliases_formatted + '.', 'success');
                         textarea.val('');
                         list_el.find('.email-counter').text('');
-                        // TODO: Update the list.
-                        //var new_list =_.groupBy(forwards, function(fwd) { return fwd.source; });
-                        //var added_list_html = nunjucks_env.render('list.html', { lists: new_list });
-                        //forwards_container.prepend(added_list_html);
+                        /* Append to existing list */
+                        var added_list_html = nunjucks_env.render('aliases.html', { 'aliases': aliases });
+                        list_el.find('tbody .alias-row').last().after(added_list_html);
                     },
                     function(xhr) {
                         var error = xhr.responseJSON;
@@ -405,19 +434,20 @@
                     }
                 );
             });
+
             /* Update num emails for all list textarea's */
-            forwards_container.on('keyup', '.js-add-list-textarea', update_num_emails);
+            forwards_container.on('keyup', '.js-add-list-textarea, .new-list textarea', updateNumEmails);
 
             /* Filter by search query */
             $('.js-lists-filter-field').on('keyup change', function(e) {
                 var term = $(this).val();
-                filter_lists(term, true);
-                reset_active_org_unit();
+                filterLists(term, true);
+                resetActiveOrgUnit();
                 var query_params = {q: term};
                 if(term === "") {
                     query_params = null;
                 }
-                set_query_string(query_params);
+                setQueryString(query_params);
             });
 
             /* New list toggle display button */
