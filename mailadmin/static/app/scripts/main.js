@@ -50,7 +50,7 @@
         var re_term = new RegExp(query_term);
         lists.each(function() {
             var list_name = $(this).attr('data-list-name');
-            var members = $(this).find('.alias');
+            var members = $(this).find('.js-destination');
             var hits = 0;
             if(with_members) {
                 hits = _.filter(members, function(el) {
@@ -150,6 +150,18 @@
         csrf_token = $('meta[name=x-csrf-token]').attr('content');
         var forwards_container = $(".forwards-container");
         nunjucks.configure({ autoescape: true });
+        moment.locale('nb');
+        /* Add filter |datefromnow and |date to nunjucks */
+        var nunjucks_env = new nunjucks.Environment();
+
+        nunjucks_env.addFilter('datefromnow', function(str) {
+            return moment(str).fromNow();
+        });
+
+        nunjucks_env.addFilter('date', function(str, strformat) {
+            return moment(str).format(strformat);
+        });
+
 
         /* Lists view (home) */
         if( $('body.home').length ) {
@@ -157,9 +169,9 @@
                 data = set_prefixes_regex(data);
 
                 /* Load orgunit list */
-                var ou_html = nunjucks.render('orgunits.html', { orgunits: data });
+                var ou_html = nunjucks_env.render('orgunits.html', { orgunits: data });
                 $(".orgunit-list").append(ou_html);
-                var ous_html = nunjucks.render('orgunits_select.html', { orgunits: data });
+                var ous_html = nunjucks_env.render('orgunits_select.html', { orgunits: data });
                 $(".orgunit-select-container").html(ous_html);
 
                 /* If searching then set q */
@@ -176,7 +188,7 @@
                     email_domain = email_domain.domain;
 
                     /* New list */
-                    var new_list_html = nunjucks.render('new_list.html', {
+                    var new_list_html = nunjucks_env.render('new_list.html', {
                         orgunits: data,
                         api_urls: api_urls,
                         email_domain: email_domain
@@ -285,7 +297,7 @@
                 }
 
                 var lists = _.groupBy(data, function(alias) { return alias.source; });
-                var fw_html = nunjucks.render('list.html', { lists: lists });
+                var fw_html = nunjucks_env.render('list.html', { lists: lists });
 
                 forwards_container.html(fw_html);
 
@@ -380,7 +392,7 @@
                         list_el.find('.email-counter').text('');
                         // TODO: Update the list.
                         //var new_list =_.groupBy(forwards, function(fwd) { return fwd.source; });
-                        //var added_list_html = nunjucks.render('list.html', { lists: new_list });
+                        //var added_list_html = nunjucks_env.render('list.html', { lists: new_list });
                         //forwards_container.prepend(added_list_html);
                     },
                     function(xhr) {
