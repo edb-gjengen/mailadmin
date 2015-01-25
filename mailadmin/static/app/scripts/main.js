@@ -56,9 +56,9 @@
                 hits = _.filter(members, function(el) {
                     var matches = re_term.test($(el).text());
                     if(matches) {
-                        $(el).parent().addClass('highlight');
+                        $(el).parent().parent().addClass('highlight');
                     } else {
-                        $(el).parent().removeClass('highlight');
+                        $(el).parent().parent().removeClass('highlight');
                     }
                     return matches;
                 });
