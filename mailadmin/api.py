@@ -24,7 +24,8 @@ class DjangoPostfixDovecotAPI(object):
     https://git.neuf.no/edb/django-postfix-dovecot-api#tab-readme
 
     """
-    def __init__(self, base_url=settings.DPD_API_URL, username=settings.DPD_API_USERNAME, password=settings.DPD_API_PASSWORD):
+    def __init__(self, base_url=settings.DPD_API_URL, username=settings.DPD_API_USERNAME,
+                 password=settings.DPD_API_PASSWORD):
         self.base_url = base_url
         self.username = username
         self.password = password
@@ -42,7 +43,7 @@ class DjangoPostfixDovecotAPI(object):
                 json=json,
                 headers=headers)
         except ConnectionError as e:
-            msg = 'mxapi at {} unavailable {}'.format(url, unicode(e))
+            msg = 'mxapi at {} unavailable {}'.format(url, str(e))
             logger.warning(msg)
             raise DPDAPIException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail={'error': msg})
 
@@ -69,7 +70,9 @@ class DjangoPostfixDovecotAPI(object):
         return self._api('DELETE', '/aliases/delete_bulk/', json=aliases)
 
     def list_aliases_regex(self, regex):
-        """ Limit aliases by regular expression and domain name """
+        """ Limit aliases by regular expression and domain name
+        :param regex: Regular expression filtering out aliases
+        """
         params = {
             'domain__name': settings.NEUF_EMAIL_DOMAIN_NAME,
             'source_regex': regex

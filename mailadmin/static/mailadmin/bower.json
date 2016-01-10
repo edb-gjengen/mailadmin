@@ -1,0 +1,14 @@
+{
+  "name": "mailadmin-www",
+  "private": true,
+  "dependencies": {
+    "jquery": "~2.2.0",
+    "underscore": "~1.8.3",
+    "nunjucks": "~2.3.0",
+    "pnotify": "~3.0.0",
+    "query-string": "~1.0.1",
+    "moment": "~2.11.1",
+    "bootstrap-sass": "~3.3.6"
+  },
+  "devDependencies": {}
+}

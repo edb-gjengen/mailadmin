@@ -1,24 +1,15 @@
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.test import TestCase
-from mailadmin.api import DjangoPostfixDovecotAPI
-import unittest
+# import unittest
 
 
-class APITest(TestCase):
+class FrontendTest(TestCase):
 
-    @unittest.skip("Not now")
-    def test_listforwards(self):
-        _api = DjangoPostfixDovecotAPI()
-        params = dict(
-            regex='^kak-*'
-        )
-        self.assertEqual(True, True)
+    def setUp(self):
+        self.user = User.objects.create(username='admin')
+        self.client.force_login(user=self.user)
 
-    @unittest.skip("Not now")
-    def test_addforward(self):
-        _api = DjangoPostfixDovecotAPI()
-        self.assertEqual(True, True)
-
-    @unittest.skip("Not now")
-    def test_delforward(self):
-        _api = DjangoPostfixDovecotAPI()
-        self.assertEqual(True, True)
+    def test_open_lists(self):
+        response = self.client.get(reverse('lists'))
+        self.assertEqual(response.status_code, 200)

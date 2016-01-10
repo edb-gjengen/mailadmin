@@ -4,32 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="x-csrf-token" content="{{ csrf_token }}">
-    <title>{% block "title" %}lister.neuf.no - Epostlister på Det Norske Studentersamfund{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'dist/styles/main.css' %}" type="text/css">
-    <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/underscore/underscore.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/nunjucks/browser/nunjucks-slim.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/moment/min/moment.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/moment/locale/nb.js' %}"></script>
-
+    <title>{% block title %}lister.neuf.no - Epostlister på Det Norske Studentersamfund{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'mailadmin/dist/styles/main.css' %}" type="text/css">
 </head>
-<body class="{% block "body-css-classes" %}{% endblock %}">
+<body class="{% block body-css-classes %}{% endblock %}">
 	{% include "nav.html" %}
 
-	{% block "body" %}{% endblock %}
+	{% block body %}{% endblock %}
     <footer class="footer">
         <div class="container">
-            <div class="credits"><p><a href="https://studentersamfundet.no" title="Det Norske Studentersamfund"><img src="{% static 'dist/images/DNSlogo.png' %}" width="70" height="70"></a></p>
+            <div class="credits"><p><a href="https://studentersamfundet.no" title="Det Norske Studentersamfund"><img src="{% static 'mailadmin/dist/images/DNSlogo.png' %}" width="70" height="70"></a></p>
             Laget med <span class="love" title="kærlighed">♥</span> av <a href="http://kak.studentersamfundet.no/" title="Kommunikasjonsavdelingen">KAK</a></div>
 
         </div>
     </footer>
-    <script type="text/javascript" src="{% static 'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/alert.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/dropdown.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/pnotify/pnotify.core.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/query-string/query-string.js' %}"></script>
-    <script type="text/javascript" src="{% static 'dist/scripts/templates.js' %}"></script>
-    <script type="text/javascript" src="{% static 'dist/scripts/main.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mailadmin/dist/scripts/vendor.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mailadmin/dist/scripts/templates.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mailadmin/dist/scripts/main.js' %}"></script>
 </body>
 </html>

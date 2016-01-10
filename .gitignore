@@ -1,8 +1,11 @@
 *.swp
 *.pyc
 local_settings.py
-venv
-.idea
 db.sqlite3
-node_modules
-.sass-cache
+venv/
+.idea/
+node_modules/
+bower_components/
+.sass-cache/
+staticfiles/
+

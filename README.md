@@ -12,7 +12,14 @@
     ldapadd -D "cn=admin,dc=neuf,dc=no" -w "toor" -f testdata.ldif
     # Verify import
     ldapsearch -x -b dc=neuf,dc=no
+
+## Django postfix dovecot
+
     
 # Development
     python manage.py runserver
     # Log in with username 'test@example.com' and password 'test'
+    
+# Deploy
+    sudo apt install fabric  # system requirement (not in requirements.txt because of lacking python3 support) 
+    fab deploy

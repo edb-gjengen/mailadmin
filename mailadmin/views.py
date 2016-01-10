@@ -53,7 +53,7 @@ class AliasesView(views.APIView):
     permission_classes = (IsAuthenticated, SourcePrefixOwner,)
 
     def get_groups(self, request):
-        group_filter = request.QUERY_PARAMS.get('groups', None)
+        group_filter = request.query_params.get('groups', None)
         if group_filter is None:
             my_groups = request.user.groups.all()
         else:
@@ -74,7 +74,7 @@ class AliasesView(views.APIView):
         if not request.user.is_superuser:
             orgunits = orgunits.filter(admin_groups__in=my_groups)
 
-        my_prefixes = Prefix.objects.filter(orgunit=orgunits)
+        my_prefixes = Prefix.objects.filter(orgunit__in=orgunits)
 
         return my_prefixes
 
@@ -128,7 +128,7 @@ class MyOrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
         if self.request.user.is_superuser:
             return orgunits
 
-        return orgunits.filter(admin_groups=self.request.user.groups)
+        return orgunits.filter(admin_groups__in=self.request.user.groups)
 
 
 class OrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
