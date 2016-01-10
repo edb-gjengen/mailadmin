@@ -94,7 +94,8 @@
             text: text,
             type: type,
             delay: 3000,
-            animate_speed: 'fast'
+            animate_speed: 'fast',
+            styling: 'bootstrap3'
         });
     }
     function updateNumEmails(event) {

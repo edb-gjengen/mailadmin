@@ -34,7 +34,7 @@ gulp.task('vendorscripts', function() {
         'bower_components/bootstrap-sass/assets/javascripts/bootstrap/alert.js',
         'bower_components/bootstrap-sass/assets/javascripts/bootstrap/dropdown.js',
         'bower_components/bootstrap-sass/assets/javascripts/bootstrap/collapse.js',
-        'bower_components/pnotify/pnotify.core.js',
+        'bower_components/pnotify/dist/pnotify.js',
         'bower_components/query-string/query-string.js'
     ];
     return gulp.src(vendorScripts)
