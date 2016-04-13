@@ -128,7 +128,7 @@ class MyOrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
         if self.request.user.is_superuser:
             return orgunits
 
-        return orgunits.filter(admin_groups__in=self.request.user.groups)
+        return orgunits.filter(admin_groups__in=self.request.user.groups.all())
 
 
 class OrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
