@@ -46,6 +46,7 @@
             $(lists).removeClass('hidden');
             return;
         }
+
         /* Filter lists */
         var re_term = new RegExp(query_term);
         lists.each(function() {
@@ -125,6 +126,7 @@
     function setActiveOrgUnit(id) {
         /* Reset active */
         $(".orgunit-list li").removeClass('active');
+
         /* Set current */
         var org_unit = $('.orgunit-list li a[data-id="'+ id +'"]');
         org_unit.parent().toggleClass('active');
@@ -351,6 +353,7 @@
                     tbody.find('.link-del').removeClass('visible');
                 }
             });
+
             /* Delete selected aliases */
            forwards_container.on('click', '.js-del-selected', function() {
                 var list_name = $(this).attr('data-delete-list-name');
