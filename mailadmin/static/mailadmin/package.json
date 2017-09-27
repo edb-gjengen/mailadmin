@@ -2,7 +2,15 @@
   "name": "mailadmin-www",
   "version": "0.0.1",
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "bootstrap-sass": "^3.3.7",
+    "jquery": "^3.2.1",
+    "moment": "^2.18.1",
+    "nunjucks": "^3.0.1",
+    "pnotify": "^3.2.1",
+    "query-string": "^1.0.1",
+    "underscore": "^1.8.3"
+  },
   "devDependencies": {
     "browser-sync": "^2.10.0",
     "del": "^2.2.0",

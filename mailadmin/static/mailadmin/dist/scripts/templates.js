@@ -102,8 +102,14 @@ try {
 var parentTemplate = null;
 frame = frame.push();
 var t_3 = runtime.contextOrFrameLookup(context, frame, "lists");
-runtime.asyncEach(t_3, 2, function(list,aliases,t_1,t_2,next) {frame.set("list", list);
-frame.set("aliases", aliases);
+if(t_3) {var t_1;
+if(runtime.isArray(t_3)) {
+var t_2 = t_3.length;
+for(t_1=0; t_1 < t_3.length; t_1++) {
+var t_4 = t_3[t_1][0]
+frame.set("list", t_3[t_1][0]);
+var t_5 = t_3[t_1][1]
+frame.set("aliases", t_3[t_1][1]);
 frame.set("loop.index", t_1 + 1);
 frame.set("loop.index0", t_1);
 frame.set("loop.revindex", t_2 - t_1);
@@ -112,37 +118,75 @@ frame.set("loop.first", t_1 === 0);
 frame.set("loop.last", t_1 === t_2 - 1);
 frame.set("loop.length", t_2);
 output += "\n<div class=\"fwdlist\" data-list-name=\"";
-output += runtime.suppressValue(list, env.opts.autoescape);
+output += runtime.suppressValue(t_4, env.opts.autoescape);
 output += "\" data-domain=\"";
-output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((aliases),0)),"domain"), env.opts.autoescape);
+output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((t_5),0)),"domain"), env.opts.autoescape);
 output += "\">\n\t<div class=\"panel panel-default\">\n\t    <div class=\"panel-heading\"><span class=\"glyphicon glyphicon-list-alt icon-faded\" aria-hidden=\"true\"></span> ";
-output += runtime.suppressValue(list, env.opts.autoescape);
+output += runtime.suppressValue(t_4, env.opts.autoescape);
 output += " <span class=\"badge badge-list-total\">";
-output += runtime.suppressValue(env.getFilter("length").call(context, aliases), env.opts.autoescape);
+output += runtime.suppressValue(env.getFilter("length").call(context, t_5), env.opts.autoescape);
 output += "</span></div>\n\t\t<table class=\"table table-condensed\">\n\t        <tbody>\n\t        \t<!-- Aliases -->\n\t\t\t\t";
-env.getTemplate("aliases.html", false, "list.html", null, function(t_6,t_4) {
-if(t_6) { cb(t_6); return; }
-t_4.render(context.getVariables(), frame, function(t_7,t_5) {
-if(t_7) { cb(t_7); return; }
-output += t_5
-output += "\n\t\t\t\t<!-- Actions: Add/Remove -->\n\t\t\t\t<tr class=\"action-row\">\n\t\t\t\t\t<td>\n\t\t\t\t\t\t<a href=\"#\" class=\"link-add js-toggle-email-textarea\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span> Legg til</a>\n\t\t\t\t\t</td>\n\t\t\t\t\t<td>\n\t\t\t\t\t\t<a href=\"#\" class=\"link-del js-del-selected\" type=\"button\" data-delete-list-name=\"";
-output += runtime.suppressValue(list, env.opts.autoescape);
-output += "\"><span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></span> Slett</a>\n\t\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t\t<tr class=\"textarea-row\">\n\t\t\t\t\t<td colspan=\"2\">\n\t\t\t\t\t\t<h4>Eposter <span class=\"badge email-counter\"></span></h4>\n\t    \t\t\t\t<textarea class=\"form-control js-add-list-textarea\" data-list-name=\"";
-output += runtime.suppressValue(list, env.opts.autoescape);
-output += "\" placeholder=\"asdf@studentersamfundet.no, qwerty@studentersamfundet.no f.eks. Klipp og lim så mye du orker\" rows=\"4\"></textarea>\n\t    \t\t\t\t<button type=\"button\" class=\"btn btn-primary btn-add-list js-new-email\" data-list-name=\"";
-output += runtime.suppressValue(list, env.opts.autoescape);
-output += "\"><span class=\"glyphicon glyphicon-plus js-new-email\" aria-hidden=\"true\"></span> Legg til</button>\n\t    \t\t\t</td>\n    \t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t\t<div class=\"result-alert\"></div>\n\t</div>\n</div>\n";
-next(t_1);
-})});
-}, function(t_9,t_8) {
+env.getTemplate("aliases.html", false, "list.html", null, function(t_8,t_6) {
+if(t_8) { cb(t_8); return; }
+t_6.render(context.getVariables(), frame, function(t_9,t_7) {
 if(t_9) { cb(t_9); return; }
+output += t_7
+output += "\n\t\t\t\t<!-- Actions: Add/Remove -->\n\t\t\t\t<tr class=\"action-row\">\n\t\t\t\t\t<td>\n\t\t\t\t\t\t<a href=\"#\" class=\"link-add js-toggle-email-textarea\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span> Legg til</a>\n\t\t\t\t\t</td>\n\t\t\t\t\t<td>\n\t\t\t\t\t\t<a href=\"#\" class=\"link-del js-del-selected\" type=\"button\" data-delete-list-name=\"";
+output += runtime.suppressValue(t_4, env.opts.autoescape);
+output += "\"><span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></span> Slett</a>\n\t\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t\t<tr class=\"textarea-row\">\n\t\t\t\t\t<td colspan=\"2\">\n\t\t\t\t\t\t<h4>Eposter <span class=\"badge email-counter\"></span></h4>\n\t    \t\t\t\t<textarea class=\"form-control js-add-list-textarea\" data-list-name=\"";
+output += runtime.suppressValue(t_4, env.opts.autoescape);
+output += "\" placeholder=\"asdf@studentersamfundet.no, qwerty@studentersamfundet.no f.eks. Klipp og lim så mye du orker\" rows=\"4\"></textarea>\n\t    \t\t\t\t<button type=\"button\" class=\"btn btn-primary btn-add-list js-new-email\" data-list-name=\"";
+output += runtime.suppressValue(t_4, env.opts.autoescape);
+output += "\"><span class=\"glyphicon glyphicon-plus js-new-email\" aria-hidden=\"true\"></span> Legg til</button>\n\t    \t\t\t</td>\n    \t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t\t<div class=\"result-alert\"></div>\n\t</div>\n</div>\n";
+})});
+}
+} else {
+t_1 = -1;
+var t_2 = runtime.keys(t_3).length;
+for(var t_10 in t_3) {
+t_1++;
+var t_11 = t_3[t_10];
+frame.set("list", t_10);
+frame.set("aliases", t_11);
+frame.set("loop.index", t_1 + 1);
+frame.set("loop.index0", t_1);
+frame.set("loop.revindex", t_2 - t_1);
+frame.set("loop.revindex0", t_2 - t_1 - 1);
+frame.set("loop.first", t_1 === 0);
+frame.set("loop.last", t_1 === t_2 - 1);
+frame.set("loop.length", t_2);
+output += "\n<div class=\"fwdlist\" data-list-name=\"";
+output += runtime.suppressValue(t_10, env.opts.autoescape);
+output += "\" data-domain=\"";
+output += runtime.suppressValue(runtime.memberLookup((runtime.memberLookup((t_11),0)),"domain"), env.opts.autoescape);
+output += "\">\n\t<div class=\"panel panel-default\">\n\t    <div class=\"panel-heading\"><span class=\"glyphicon glyphicon-list-alt icon-faded\" aria-hidden=\"true\"></span> ";
+output += runtime.suppressValue(t_10, env.opts.autoescape);
+output += " <span class=\"badge badge-list-total\">";
+output += runtime.suppressValue(env.getFilter("length").call(context, t_11), env.opts.autoescape);
+output += "</span></div>\n\t\t<table class=\"table table-condensed\">\n\t        <tbody>\n\t        \t<!-- Aliases -->\n\t\t\t\t";
+env.getTemplate("aliases.html", false, "list.html", null, function(t_14,t_12) {
+if(t_14) { cb(t_14); return; }
+t_12.render(context.getVariables(), frame, function(t_15,t_13) {
+if(t_15) { cb(t_15); return; }
+output += t_13
+output += "\n\t\t\t\t<!-- Actions: Add/Remove -->\n\t\t\t\t<tr class=\"action-row\">\n\t\t\t\t\t<td>\n\t\t\t\t\t\t<a href=\"#\" class=\"link-add js-toggle-email-textarea\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span> Legg til</a>\n\t\t\t\t\t</td>\n\t\t\t\t\t<td>\n\t\t\t\t\t\t<a href=\"#\" class=\"link-del js-del-selected\" type=\"button\" data-delete-list-name=\"";
+output += runtime.suppressValue(t_10, env.opts.autoescape);
+output += "\"><span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></span> Slett</a>\n\t\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t\t<tr class=\"textarea-row\">\n\t\t\t\t\t<td colspan=\"2\">\n\t\t\t\t\t\t<h4>Eposter <span class=\"badge email-counter\"></span></h4>\n\t    \t\t\t\t<textarea class=\"form-control js-add-list-textarea\" data-list-name=\"";
+output += runtime.suppressValue(t_10, env.opts.autoescape);
+output += "\" placeholder=\"asdf@studentersamfundet.no, qwerty@studentersamfundet.no f.eks. Klipp og lim så mye du orker\" rows=\"4\"></textarea>\n\t    \t\t\t\t<button type=\"button\" class=\"btn btn-primary btn-add-list js-new-email\" data-list-name=\"";
+output += runtime.suppressValue(t_10, env.opts.autoescape);
+output += "\"><span class=\"glyphicon glyphicon-plus js-new-email\" aria-hidden=\"true\"></span> Legg til</button>\n\t    \t\t\t</td>\n    \t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t\t<div class=\"result-alert\"></div>\n\t</div>\n</div>\n";
+})});
+}
+}
+}
 frame = frame.pop();
 if(parentTemplate) {
 parentTemplate.rootRenderFunc(env, context, frame, runtime, cb);
 } else {
 cb(null, output);
 }
-});
+;
 } catch (e) {
   cb(runtime.handleError(e, lineno, colno));
 }

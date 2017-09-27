@@ -9,7 +9,7 @@ var reload = browserSync.reload;
 gulp.task('styles', function () {
     return gulp.src('app/styles/main.scss')
         .pipe($.sass({
-            includePaths: ['bower_components/foundation/scss'],
+            includePaths: ['.'],
             sourceComments: 'map'
         }).on('error', $.sass.logError))
 
@@ -26,16 +26,16 @@ gulp.task('scripts', function () {
 });
 gulp.task('vendorscripts', function() {
     var vendorScripts = [
-        'bower_components/jquery/dist/jquery.js',
-        'bower_components/underscore/underscore.js',
-        'bower_components/nunjucks/browser/nunjucks-slim.js',
-        'bower_components/moment/min/moment.min.js',
-        'bower_components/moment/locale/nb.js',
-        'bower_components/bootstrap-sass/assets/javascripts/bootstrap/alert.js',
-        'bower_components/bootstrap-sass/assets/javascripts/bootstrap/dropdown.js',
-        'bower_components/bootstrap-sass/assets/javascripts/bootstrap/collapse.js',
-        'bower_components/pnotify/dist/pnotify.js',
-        'bower_components/query-string/query-string.js'
+        'node_modules/jquery/dist/jquery.min.js',
+        'node_modules/underscore/underscore-min.js',
+        'node_modules/nunjucks/browser/nunjucks-slim.min.js',
+        'node_modules/moment/min/moment.min.js',
+        'node_modules/moment/locale/nb.js',
+        'node_modules/bootstrap-sass/assets/javascripts/bootstrap/alert.js',
+        'node_modules/bootstrap-sass/assets/javascripts/bootstrap/dropdown.js',
+        'node_modules/bootstrap-sass/assets/javascripts/bootstrap/collapse.js',
+        'node_modules/pnotify/dist/pnotify.js',
+        'node_modules/query-string/query-string.js'
     ];
     return gulp.src(vendorScripts)
         .pipe($.concat('vendor.js'))
@@ -53,14 +53,7 @@ gulp.task('images', function () {
 });
 
 gulp.task('fonts', function () {
-    var vendorFonts = [
-        'bower_components/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.eot',
-        'bower_components/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.svg',
-        'bower_components/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.ttf',
-        'bower_components/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.woff',
-        'bower_components/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.woff2'
-    ];
-    return gulp.src(vendorFonts)
+    return gulp.src(['node_modules/bootstrap-sass/assets/fonts/**/*'])
         .pipe($.filter('**/*.{eot,svg,ttf,woff,woff2}'))
         .pipe($.flatten())
         .pipe(gulp.dest('dist/fonts'))
