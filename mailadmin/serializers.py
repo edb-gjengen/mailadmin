@@ -31,7 +31,7 @@ class OrgUnitSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrgUnit
-        fields = ['__all__']
+        fields = ['__all__', 'admin_groups', 'member_groups', 'prefixes']
 
 
 class AliasSerializer(serializers.Serializer):
