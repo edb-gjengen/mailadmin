@@ -75,7 +75,7 @@ class DjangoPostfixDovecotAPI(object):
         """
         params = {
             'domain__name': settings.NEUF_EMAIL_DOMAIN_NAME,
-            'source_regex': regex
+            'source__iregex': regex
         }
         return self._api(
             'GET',
