@@ -118,7 +118,7 @@ AUTH_LDAP_U_GROUP_TYPE = PosixGroupType()
 AUTH_LDAP_U_MIRROR_GROUPS = True
 # Group to user flag mappings
 AUTH_LDAP_U_USER_FLAGS_BY_GROUP = {
-    "is_active": "cn=dns-alle,ou=Groups,dc=neuf,dc=no",
+    "is_active": "cn=dns-aktiv,ou=Groups,dc=neuf,dc=no",
     "is_staff": "cn=edb,ou=Groups,dc=neuf,dc=no",
     "is_superuser": "cn=edbadmin,ou=Groups,dc=neuf,dc=no"
 }
