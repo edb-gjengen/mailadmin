@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from django.conf import settings
 from django.contrib.auth import login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -29,7 +28,7 @@ def index(request):
             login(request, form.get_user())
             return redirect('lists')
     else:
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return redirect('lists')
         else:
             form = AuthenticationForm(request)
@@ -142,7 +141,4 @@ def get_domain(request):
     api = DjangoPostfixDovecotAPI()
     domains = api.list_domains(name=settings.NEUF_EMAIL_DOMAIN_NAME)
 
-    if len(domains) != 1:
-        return Response({'domain': domains})
-
-    return Response({'domain': domains[0]})
+    return Response({'domain': domains[0] if len(domains) == 1 else domains})

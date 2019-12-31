@@ -10,9 +10,9 @@ urlpatterns = [
 
 # API
 router = DefaultRouter()
-router.register(r'api/me', MyUserViewSet, base_name='me')
-router.register(r'api/orgunits', MyOrgUnitViewSet, base_name='ous')
-router.register(r'api/orgunits/all', OrgUnitViewSet, base_name='allous')
+router.register(r'api/me', MyUserViewSet, basename='me')
+router.register(r'api/orgunits', MyOrgUnitViewSet, basename='ous')
+router.register(r'api/orgunits/all', OrgUnitViewSet, basename='allous')
 urlpatterns += router.urls
 
 urlpatterns += [

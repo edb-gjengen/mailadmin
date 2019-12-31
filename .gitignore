@@ -5,7 +5,6 @@ db.sqlite3
 venv/
 .idea/
 node_modules/
-bower_components/
 .sass-cache/
 staticfiles/
-
+mailadmin/static/mailadmin/dist/

@@ -1,8 +1,9 @@
 $icon-font-path: "../fonts/";
 
-@import "../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+@import "~bootstrap/scss/bootstrap";
 @import "pnotify.core";
-@import "animations";
+
+@import "./animations";
 
 .login-form {
 	margin: 0 auto;

@@ -1,6 +1,6 @@
 # Installation
     apt-get install libldap2-dev python-dev libsasl2-dev libssl-dev ldap-utils libffi-dev
-    virtualenv venv
+    python3 -m venv venv
     . venv/bin/activate
     pip install -r requirements.txt
     # Create or modify local_settings.py
@@ -21,5 +21,5 @@
     # Log in with username 'test@example.com' and password 'test'
     
 # Deploy
-    sudo apt install fabric  # system requirement (not in requirements.txt because of lacking python3 support) 
+
     fab deploy

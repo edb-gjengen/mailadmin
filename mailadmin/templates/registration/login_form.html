@@ -1,7 +1,7 @@
-{% load bootstrap %}
+{% load bootstrap4 %}
 <div class="login-form">
     <form method="post">
-        {{ form|bootstrap }}
+        {% bootstrap_form form %}
         {% csrf_token %}
         <a href="https://galtinn.neuf.no/auth/password_reset/">Glemt brukernavn eller passord?</a><br>
         <input type="submit" value="Logg inn" class="btn btn-primary btn-lg">
