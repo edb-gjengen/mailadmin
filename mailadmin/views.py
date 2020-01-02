@@ -137,8 +137,8 @@ class OrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 @api_view(['GET'])
-def get_domain(request):
+def get_domains(request):
     api = DjangoPostfixDovecotAPI()
     domains = api.list_domains(name=settings.NEUF_EMAIL_DOMAIN_NAME)
 
-    return Response({'domain': domains[0] if len(domains) == 1 else domains})
+    return Response(domains)

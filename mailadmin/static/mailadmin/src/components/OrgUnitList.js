@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 import ctx from 'classnames';
+
 import { setQueryString } from '../utils';
+import { GET_ORG_UNITS } from '../queries';
 
 const Search = ({ query, setQuery }) => {
   return (
@@ -24,19 +25,21 @@ const OrgUnit = ({ id, name, selected, onClick }) => (
   </li>
 );
 
-const GET_ORG_UNITS = gql`
-  query OrgUnits {
-    orgUnits @rest(type: "OrgUnit", path: "orgunits/") {
-      id
-      name
-      prefixes
-    }
-  }
-`;
 const OrgUnitList = () => {
   const [query, setQuery] = useState(new URLSearchParams(window.location.search).get('q') || '');
   const [selected, setSelected] = useState(null);
   const { data, loading, error } = useQuery(GET_ORG_UNITS);
+
+  const setSearchQuery = useCallback(
+    (e) => {
+      e.preventDefault();
+      const q = e.target.value;
+      setQuery(q);
+      setQueryString(q ? { q } : null);
+    },
+    [setQuery]
+  );
+
   if (loading || error) {
     return null;
   }
@@ -49,16 +52,8 @@ const OrgUnitList = () => {
 
   return (
     <div className="col-sm-4 sidebar">
-      <Search
-        query={query}
-        setQuery={(e) => {
-          e.preventDefault();
-          const q = e.target.value;
-          setQuery(q);
-          setQueryString(q ? { q } : null);
-        }}
-      />
-      <h4>Foreninger/Utvalg</h4>
+      <Search query={query} setQuery={setSearchQuery} />
+      <h5>Foreninger/Utvalg</h5>
       <ul className="nav nav-sidebar orgunit-list">
         <li className={ctx({ active: selected === null })}>
           <a

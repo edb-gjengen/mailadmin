@@ -1,5 +1,3 @@
-/* global _ */
-
 import PNotify from 'pnotify/dist/es/PNotify';
 import * as queryString from 'query-string';
 
@@ -14,14 +12,15 @@ export function parseEmails(text) {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   // For each of the words, add to the array of emails if the word matches the email regex.
-  let emails = _.filter(words, (word) => {
-    return word.match(re);
-  });
-  emails = _.map(emails, (el) => {
-    return el.toLowerCase();
-  });
+  const emails = words
+    .filter((word) => {
+      return word.match(re);
+    })
+    .map((el) => {
+      return el.toLowerCase();
+    });
 
-  return _.unique(emails);
+  return [...new Set(emails)];
 }
 
 export function setQueryString(obj) {

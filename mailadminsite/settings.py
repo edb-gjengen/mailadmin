@@ -86,11 +86,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-# TODO: add to local_settings.py
 
 LOGIN_REDIRECT_URL = '/lists/'
 
-DPD_API_URL = 'http://localhost'
+# Django Postfix Dovecot
+DPD_API_URL = 'http://localhost:8080/api'
 DPD_API_USERNAME = ""
 DPD_API_PASSWORD = ""
 
@@ -120,10 +120,6 @@ AUTH_LDAP_U_USER_FLAGS_BY_GROUP = {
     "is_staff": "cn=edb,ou=Groups,dc=neuf,dc=no",
     "is_superuser": "cn=edbadmin,ou=Groups,dc=neuf,dc=no"
 }
-# Group to profile flag mappings, not used.
-AUTH_LDAP_U_PROFILE_FLAGS_BY_GROUP = {
-    #"is_edb": "cn=edb,ou=Groups,dc=neuf,dc=no"
-}
 # User attribute mappings
 AUTH_LDAP_U_USER_ATTR_MAP = {
     "first_name": "givenName",
@@ -148,7 +144,6 @@ AUTH_LDAP_E_GROUP_SEARCH = AUTH_LDAP_U_GROUP_SEARCH
 AUTH_LDAP_E_GROUP_TYPE = AUTH_LDAP_U_GROUP_TYPE
 AUTH_LDAP_E_MIRROR_GROUPS = AUTH_LDAP_U_MIRROR_GROUPS
 AUTH_LDAP_E_USER_FLAGS_BY_GROUP = AUTH_LDAP_U_USER_FLAGS_BY_GROUP
-AUTH_LDAP_E_PROFILE_FLAGS_BY_GROUP = AUTH_LDAP_U_PROFILE_FLAGS_BY_GROUP
 AUTH_LDAP_E_USER_ATTR_MAP = AUTH_LDAP_U_USER_ATTR_MAP
 AUTH_LDAP_E_PROFILE_ATTR_MAP = AUTH_LDAP_U_PROFILE_ATTR_MAP
 AUTH_LDAP_E_ALWAYS_UPDATE_USER = AUTH_LDAP_U_ALWAYS_UPDATE_USER
