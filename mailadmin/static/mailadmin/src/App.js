@@ -6,15 +6,24 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 
 import { OrgUnitList, MainArea } from './components';
 
-const restLink = new RestLink({ uri: '/api/' });
+import { getCookie } from './utils';
+
+const restLink = new RestLink({
+  uri: '/api/',
+  credentials: 'include',
+  headers: {
+    'x-csrftoken': getCookie('csrftoken')
+  }
+});
 const client = new ApolloClient({
   link: restLink,
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  typeDefs: {}
 });
 
 const App = () => (
   <ApolloProvider client={client}>
-    <div className="container">
+    <div className="container" style={{ marginTop: '2rem' }}>
       <div className="row">
         <OrgUnitList />
         <MainArea />

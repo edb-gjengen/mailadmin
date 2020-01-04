@@ -46,66 +46,58 @@ def logout(request):
     return redirect('index')
 
 
-class AliasesView(views.APIView):
-    """ List, create and delete aliases from django-postfix-dovecot-api """
+class BaseAliasesView(views.APIView):
     _api = DjangoPostfixDovecotAPI()
     permission_classes = (IsAuthenticated, SourcePrefixOwner,)
 
-    def get_groups(self, request):
+    def _user_groups(self, request):
         group_filter = request.query_params.get('groups', None)
         if group_filter is None:
-            my_groups = request.user.groups.all()
+            user_groups = request.user.groups.all()
         else:
-            # Filter groups
-            if ',' in group_filter:
-                group_filter = group_filter.split(',')
-            else:
-                group_filter = [group_filter]
-            my_groups = request.user.groups.filter(pk__in=group_filter)
+            group_filter = group_filter.split(',') if ',' in group_filter else [group_filter]
+            user_groups = request.user.groups.filter(pk__in=group_filter)
 
-        return my_groups
+        return user_groups
 
-    def get_user_prefixes(self, request):
-        my_groups = self.get_groups(request)
+    def user_prefixes(self, request):
+        """Look for mailinglist prefixes"""
+        orgunits = OrgUnit.objects.filter(is_active=True)
+        if request.user.is_superuser:
+            return Prefix.objects.filter(orgunit__in=orgunits)
 
-        # Look for mailinglist prefixes
-        orgunits = OrgUnit.objects.exclude(is_active=False).distinct()
-        if not request.user.is_superuser:
-            orgunits = orgunits.filter(admin_groups__in=my_groups)
+        orgunits = orgunits.filter(admin_groups__in=self._user_groups(request)).distinct()
+        return Prefix.objects.filter(orgunit__in=orgunits)
 
-        my_prefixes = Prefix.objects.filter(orgunit__in=orgunits)
 
-        return my_prefixes
-
+class AliasesView(BaseAliasesView):
+    """ List and create aliases from django-postfix-dovecot-api """
     def get(self, request):
-        my_prefixes = self.get_user_prefixes(request)
+        user_prefixes = self.user_prefixes(request)
 
         # Prepare regular expression
-        regex = my_prefixes.as_regex()
-        if len(my_prefixes) == 0:
+        regex = user_prefixes.as_regex()
+        if len(user_prefixes) == 0:
             return Response({'result': 'No results'})  # Need at least one
 
-        res = self._api.list_aliases_regex(regex)
-
-        return Response(res)
+        return Response(self._api.list_aliases_regex(regex))
 
     def post(self, request):
         aliases = AliasSerializer(data=request.data, many=True)
         if not aliases.is_valid():
             return Response(aliases.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        res = self._api.create_aliases(aliases.data)
+        return Response(self._api.create_aliases(aliases.data))
 
-        return Response(res)
 
-    def delete(self, request):
+class AliasesDeleteView(BaseAliasesView):
+    """ Delete aliases (using POST) from django-postfix-dovecot-api """
+    def post(self, request):
         aliases = AliasSerializer(data=request.data, many=True)
         if not aliases.is_valid():
             return Response(aliases.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        res = self._api.delete_aliases(aliases.data)
-
-        return Response(res)
+        return Response(self._api.delete_aliases(aliases.data))
 
 
 class MyUserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -123,7 +115,7 @@ class MyOrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        orgunits = OrgUnit.objects.exclude(prefixes__isnull=True).exclude(is_active=False).distinct()
+        orgunits = OrgUnit.objects.filter(prefixes__isnull=False, is_active=True).distinct()
         if self.request.user.is_superuser:
             return orgunits
 

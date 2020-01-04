@@ -10,7 +10,6 @@ export const GET_ORG_UNITS = gql`
   }
 `;
 
-// FIXME: only a single domain
 export const GET_DOMAINS = gql`
   query Domains {
     domains @rest(type: "Domain", path: "domains/") {
@@ -21,7 +20,7 @@ export const GET_DOMAINS = gql`
 `;
 
 export const GET_ALIASES = gql`
-  query OrgUnits {
+  query Aliases {
     aliases @rest(type: "Alias", path: "aliases/") {
       id
       source

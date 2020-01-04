@@ -1,4 +1,5 @@
 import PNotify from 'pnotify/dist/es/PNotify';
+import PNotifyButtons from 'pnotify/dist/es/PNotifyButtons';
 import * as queryString from 'query-string';
 
 export function parseEmails(text) {
@@ -31,9 +32,13 @@ export function setQueryString(obj) {
   window.history.pushState(null, null, `/lists/${qs}`);
 }
 
-export function notify(title, text, type) {
-  /* types: info, success, error */
-  return new PNotify({
+/**
+ * @param {string} title
+ * @param {string} text
+ * @param {('info'|'success'|'error')} type
+ * */
+export function notify(title, text, type = 'success') {
+  PNotify.alert({
     title,
     text,
     type,
@@ -41,4 +46,20 @@ export function notify(title, text, type) {
     animate_speed: 'fast',
     styling: 'bootstrap4'
   });
+}
+
+export function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === `${name}=`) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
 }

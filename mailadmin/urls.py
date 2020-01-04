@@ -1,11 +1,12 @@
-from django.conf.urls import url
+from django.urls import path, re_path
 from rest_framework.routers import DefaultRouter
 
-from mailadmin.views import MyUserViewSet, MyOrgUnitViewSet, OrgUnitViewSet, AliasesView, get_domains, index, lists
+from mailadmin.views import MyUserViewSet, MyOrgUnitViewSet, OrgUnitViewSet, AliasesView, get_domains, index, lists, \
+    AliasesDeleteView
 
 urlpatterns = [
-    url(r'^$', index, name='index'),
-    url(r'^lists/', lists, name='lists'),
+    re_path(r'^$', index, name='index'),
+    path('lists/', lists, name='lists'),
 ]
 
 # API
@@ -16,6 +17,7 @@ router.register(r'api/orgunits/all', OrgUnitViewSet, basename='allous')
 urlpatterns += router.urls
 
 urlpatterns += [
-    url(r'^api/aliases/', AliasesView.as_view(), name='aliases'),
-    url(r'^api/domains/', get_domains, name='email-domains'),
+    path('api/aliases/', AliasesView.as_view(), name='aliases'),
+    path('api/aliases/delete/', AliasesDeleteView.as_view(), name='aliases-delete'),
+    path('api/domains/', get_domains, name='email-domains'),
 ]
