@@ -1,8 +1,0 @@
-{% for alias in aliases %}
-<tr class="alias-row">
-    <td class="alias"><span class="js-destination" title="Lagt til {{ alias.created|datefromnow }} ({{ alias.created|date('LLLL') }})">{{ alias.destination }}</span></td>
-    <td class="del-cell">
-        <label class="del-label" for="{{alias.id}}"><input id="{{alias.id}}" type="checkbox" name='fwd-delete' value="{{alias.id}}" data-source="{{alias.source}}" data-destination="{{alias.destination}}" data-domain="{{alias.domain}}"/></label>
-    </td>
-</tr>
-{% endfor %}

@@ -30,7 +30,7 @@ class DjangoPostfixDovecotAPI(object):
         self.username = username
         self.password = password
 
-    def _api(self, method, path, params=None, json=None):
+    def _request(self, method, path, params=None, json=None):
         headers = {'content-type': 'application/json'}
         url = "{}{}".format(self.base_url, path)
 
@@ -64,10 +64,10 @@ class DjangoPostfixDovecotAPI(object):
         return ret
 
     def create_aliases(self, aliases):
-        return self._api('POST', '/aliases/create_bulk/', json=aliases)
+        return self._request('POST', '/aliases/create_bulk/', json=aliases)
 
     def delete_aliases(self, aliases):
-        return self._api('DELETE', '/aliases/delete_bulk/', json=aliases)
+        return self._request('DELETE', '/aliases/delete_bulk/', json=aliases)
 
     def list_aliases_regex(self, regex):
         """ Limit aliases by regular expression and domain name
@@ -77,7 +77,7 @@ class DjangoPostfixDovecotAPI(object):
             'domain__name': settings.NEUF_EMAIL_DOMAIN_NAME,
             'source__iregex': regex
         }
-        return self._api(
+        return self._request(
             'GET',
             '/aliases/',
             params=params
@@ -89,7 +89,7 @@ class DjangoPostfixDovecotAPI(object):
         if name is not None:
             params['name'] = name
 
-        return self._api(
+        return self._request(
             'GET',
             '/domains/',
             params=params

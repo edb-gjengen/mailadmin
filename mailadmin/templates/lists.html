@@ -1,22 +1,5 @@
 {% extends "base.html" %}
 {% block body-css-classes %}home{% endblock %}
 {% block body %}
-<div class="container">
-    <div class="row">
-        <div class="col-sm-4 sidebar">
-            <input type="search" class="form-control search-field js-lists-filter-field" placeholder="Søk i listene">
-            <h4>Foreninger/Utvalg</h4>
-            <ul class="nav nav-sidebar orgunit-list">
-            </ul>
-        </div>
-        <div class="col-sm-8">
-            <div class="orgunit-select-container"></div>
-            <div class="new-list-container">
-                <button type="button" class="btn btn-default new-list-btn"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Opprett ny liste</button>
-                <div class="new-list fwdlist" data-list-name="newlist@example.com"></div><div class="new-list-result"></div>
-            </div>
-            <div class="forwards-container"><span class="glyphicon glyphicon-refresh spin" aria-hidden="true"></span> Laster...</div>
-        </div>
-    </div>
-</div>
+    <div id="app">Laster...</div>
 {% endblock %}

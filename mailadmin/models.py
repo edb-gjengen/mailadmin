@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from django.contrib.auth.models import Group
 from django.db import models
 
@@ -31,7 +30,7 @@ class Prefix(models.Model):
         return self.name or ''
 
     name = models.CharField(max_length=500, blank=True, null=True)
-    orgunit = models.ForeignKey('mailadmin.OrgUnit', related_name='prefixes')
+    orgunit = models.ForeignKey('mailadmin.OrgUnit', models.CASCADE, related_name='prefixes')
 
     objects = PrefixQueryset.as_manager()
 

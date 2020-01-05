@@ -1,27 +1,32 @@
-from contextlib import contextmanager as _contextmanager
-from fabric.api import run, sudo, env, cd, prefix, lcd
+import os
 
-env.use_ssh_config = True
-env.hosts = ['dreamcast.neuf.no']
-env.project_path = '/var/www/neuf.no/mailadmin'
-env.user = 'gitdeploy'
-env.activate = 'source {}/venv/bin/activate'.format(env.project_path)
+from fabric import Connection
+from invoke import task
 
 
-@_contextmanager
-def virtualenv():
-    with cd(env.project_path):
-        with prefix(env.activate):
-            yield
+@task()
+def deploy(c):
+    """Make sure proxy_user is set to your neuf username."""
+    project_path = '/var/www/neuf.no/mailadmin'
+    proxy_user = os.getenv('DEPLOY_USER', os.getenv('USER'))
 
+    c = Connection(host='gitdeploy@dreamcast.neuf.no', gateway=Connection('login.neuf.no', user=proxy_user))
 
-def deploy():
-    with virtualenv():
-        run('git pull')  # Get source
-        run('pip install -r requirements.txt')  # install deps in virtualenv
-        run('python manage.py collectstatic --noinput -i node_modules -i bower_components')  # Collect static
-        run('python manage.py migrate')  # Run DB migrations
+    with c.cd(project_path), c.prefix('source {}/venv/bin/activate'.format(project_path)):
+        c.run('git pull')  # Get source
+        c.run('pip install -r requirements.txt')  # install deps in virtualenv
+        with c.cd('mailadmin/static/mailadmin'):  # install and compile frontend deps
+            c.run('npm i')
+            c.run('npm run build')
+        c.run('python manage.py collectstatic --noinput -i node_modules')  # Collect static
+        c.run('python manage.py migrate')  # Run DB migrations
 
     # Reload gunicorn
-    sudo('/usr/bin/supervisorctl pid lister.neuf.no | xargs kill -HUP', shell=False)
+    c.sudo('/usr/bin/supervisorctl pid lister.neuf.no | xargs kill -HUP', shell=False)
 
+
+@task
+def build(c):
+    with c.cd('mailadmin/static/mailadmin'):
+        c.run('npm i')
+        c.run('npm run build')

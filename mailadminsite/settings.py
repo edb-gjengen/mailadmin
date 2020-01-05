@@ -25,20 +25,21 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
-    'bootstrapform',
+    'bootstrap4',
     'mailadmin',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+    'django.contrib.messages.middleware.MessageMiddleware',
+]
 
 ROOT_URLCONF = 'mailadminsite.urls'
 
@@ -56,14 +57,10 @@ DATABASES = {
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            # insert your TEMPLATE_DIRS here
-        ],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
-                # list if you haven't customized them:
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.i18n',
@@ -88,11 +85,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 LOGIN_REDIRECT_URL = '/lists/'
 
-DPD_API_URL = 'http://localhost'
+# Django Postfix Dovecot
+DPD_API_URL = 'http://localhost:8080/api'
 DPD_API_USERNAME = ""
 DPD_API_PASSWORD = ""
 
@@ -122,10 +120,6 @@ AUTH_LDAP_U_USER_FLAGS_BY_GROUP = {
     "is_staff": "cn=edb,ou=Groups,dc=neuf,dc=no",
     "is_superuser": "cn=edbadmin,ou=Groups,dc=neuf,dc=no"
 }
-# Group to profile flag mappings, not used.
-AUTH_LDAP_U_PROFILE_FLAGS_BY_GROUP = {
-    #"is_edb": "cn=edb,ou=Groups,dc=neuf,dc=no"
-}
 # User attribute mappings
 AUTH_LDAP_U_USER_ATTR_MAP = {
     "first_name": "givenName",
@@ -150,7 +144,6 @@ AUTH_LDAP_E_GROUP_SEARCH = AUTH_LDAP_U_GROUP_SEARCH
 AUTH_LDAP_E_GROUP_TYPE = AUTH_LDAP_U_GROUP_TYPE
 AUTH_LDAP_E_MIRROR_GROUPS = AUTH_LDAP_U_MIRROR_GROUPS
 AUTH_LDAP_E_USER_FLAGS_BY_GROUP = AUTH_LDAP_U_USER_FLAGS_BY_GROUP
-AUTH_LDAP_E_PROFILE_FLAGS_BY_GROUP = AUTH_LDAP_U_PROFILE_FLAGS_BY_GROUP
 AUTH_LDAP_E_USER_ATTR_MAP = AUTH_LDAP_U_USER_ATTR_MAP
 AUTH_LDAP_E_PROFILE_ATTR_MAP = AUTH_LDAP_U_PROFILE_ATTR_MAP
 AUTH_LDAP_E_ALWAYS_UPDATE_USER = AUTH_LDAP_U_ALWAYS_UPDATE_USER

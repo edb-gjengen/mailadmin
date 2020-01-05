@@ -1,0 +1,143 @@
+/* Lists */
+.del-cell {
+	text-align: right;
+	width: 54px;
+    padding: 2px 0 0 !important;
+	vertical-align: middle;
+}
+.del-label {
+	display: block;
+	height: 30px;
+	margin: 0;
+	text-align: center;
+
+	input {
+		margin: 0;
+		position: relative;
+		top: 6px;
+	}
+}
+.badge-list-total {
+	float: right;
+    position: relative;
+    top: 3px;
+}
+
+.new-list-btn {
+	margin-bottom: 1rem;
+}
+.new-list {
+	display: none;
+	margin-bottom: 1rem;
+
+	&.visible {
+		display: block;
+	}
+}
+.new-list-name {
+	padding-bottom: 5px;
+}
+.btn-add-list {
+	margin-top: 1rem;
+}
+/* Forward list */
+.panel-heading {
+	font-weight: bold;
+	font-size: 16px;
+}
+.icon-faded {
+	position: relative;
+	top: 1px;
+	margin-right: 4px;
+	color: #ccc;
+}
+.table-condensed {
+	margin-bottom: 0;
+
+	> tbody > tr > td {
+		padding: 5px;
+
+		&:first-child {
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+	}
+
+	> tbody > tr.action-row > td {
+		padding: 0;
+
+		&:first-child {
+			padding: 0;
+		}
+	}
+}
+.custom-control-label:after, .custom-control-label:before {
+	width: 1.3rem;
+	height: 1.3rem;
+}
+.action-row {
+	.link-add {
+		display: block;
+	}
+	.link-del {
+		white-space: nowrap;
+		display: none;
+
+		&.visible {
+			display: block;
+		}
+	}
+	a {
+		padding: 10px;
+		padding-left: 16px;
+		&:hover {
+			background-color: #f5f5f5;
+		}
+	}
+	textarea {
+		margin-bottom: 8px;
+	}
+}
+.textarea-row {
+	display: none;
+	td {
+		padding-right: 16px;
+	}
+	&.visible {
+		display: table-row;
+	}
+	.btn-add-list {
+		margin-bottom: 10px;
+	}
+}
+
+.card-header {
+	font-weight: bold;
+}
+
+/* Responsive fixes */
+@media(max-width: map-get($grid-breakpoints, "sm")){
+	.card-header {
+		font-size: 13px;
+	}
+	.card-header .icon-faded {
+		display: none;
+	}
+	td {
+		font-size: 13px;
+	}
+}
+
+.footer {
+	margin-top: 40px;
+}
+.love {
+    color: #faafba;
+}
+.credits {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    text-align: center;
+    color: #666;
+    font-size: 12px;
+}

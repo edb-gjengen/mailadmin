@@ -1,6 +1,0 @@
-<select class="orgunits-select form-control">
-    <option value="" data-prefix=".+">Alle</option>
-	{% for ou in orgunits %}
-	    <option value="{{ ou.id }}" data-prefix="{{ou.prefixes_regex }}">{{ ou.name }}</option>
-	{% endfor %}
-</select>
