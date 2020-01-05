@@ -4,9 +4,8 @@ import { RestLink } from 'apollo-link-rest';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
-import { OrgUnitList, MainArea } from './components';
-
 import { getCookie } from './utils';
+import MailAdmin from './components/MailAdmin';
 
 const restLink = new RestLink({
   uri: '/api/',
@@ -25,8 +24,7 @@ const App = () => (
   <ApolloProvider client={client}>
     <div className="container" style={{ marginTop: '2rem' }}>
       <div className="row">
-        <OrgUnitList />
-        <MainArea />
+        <MailAdmin />
       </div>
     </div>
   </ApolloProvider>

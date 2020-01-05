@@ -13,6 +13,8 @@ const AliasListCreate = ({ domain, lists, orgUnits }) => {
   const listName = `${selectedPrefix}-${name}@${domain.name}`;
   const shouldCreate = Boolean(Object.entries(lists).filter(([list]) => list === listName).length);
 
+  const flattenedPrefixes = [].concat(...orgUnits.map((ou) => ou.prefixes.map((prefix) => prefix))).sort();
+
   return (
     <div className="new-list-container">
       <button
@@ -44,21 +46,19 @@ const AliasListCreate = ({ domain, lists, orgUnits }) => {
                 {selectedPrefix}- <span className="caret" />
               </button>
               <div className="dropdown-menu prefix-select">
-                {orgUnits.map((ou) =>
-                  ou.prefixes.map((prefix) => (
-                    <a
-                      key={`${ou.id}-${prefix}`}
-                      className="dropdown-item"
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setSelectedPrefix(prefix);
-                      }}
-                    >
-                      {prefix}-
-                    </a>
-                  ))
-                )}
+                {flattenedPrefixes.map((prefix) => (
+                  <a
+                    key={prefix}
+                    className="dropdown-item"
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setSelectedPrefix(prefix);
+                    }}
+                  >
+                    {prefix}-
+                  </a>
+                ))}
               </div>
             </div>
             <input

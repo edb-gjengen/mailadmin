@@ -7,10 +7,11 @@ import { DELETE_ALIASES_MUTATION } from '../mutations';
 import { notify } from '../utils';
 import { GET_ALIASES } from '../queries';
 
-const AliasRow = ({ id, destination, updateDeletionList }) => {
+const AliasRow = ({ id, destination, query, updateDeletionList }) => {
   const [checked, setChecked] = useState(false);
+  const queryMatch = query && destination.includes(query);
   return (
-    <tr className={ctx({ 'table-danger': checked })}>
+    <tr className={ctx({ 'table-danger': checked, 'table-success': queryMatch })}>
       <td>{destination}</td>
       <td className="del-cell">
         <div className="custom-control custom-checkbox custom-control-inline">
@@ -49,7 +50,7 @@ const ActionRow = ({ onAddEmailClick, deleteVisible, onDelete }) => {
   );
 };
 
-const AliasList = ({ list, aliases, domain }) => {
+const AliasList = ({ list, aliases, domain, query }) => {
   const [textareaVisible, setTextareaVisible] = useState(false);
   const [deletionList, setDeletionList] = useState([]);
   const [deleteAliases] = useMutation(DELETE_ALIASES_MUTATION);
@@ -106,6 +107,7 @@ const AliasList = ({ list, aliases, domain }) => {
                   setDeletionList(deletionList.filter(({ id }) => id !== aliasId)); // remove
                 }
               }}
+              query={query}
             />
           ))}
           <ActionRow

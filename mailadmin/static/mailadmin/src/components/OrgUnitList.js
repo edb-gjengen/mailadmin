@@ -1,9 +1,7 @@
-import React, { useState, useCallback } from 'react';
-import { useQuery } from '@apollo/react-hooks';
+import React, { useCallback } from 'react';
 import ctx from 'classnames';
 
 import { setQueryString } from '../utils';
-import { GET_ORG_UNITS } from '../queries';
 
 const Search = ({ query, setQuery }) => {
   return (
@@ -25,11 +23,7 @@ const OrgUnit = ({ id, name, selected, onClick }) => (
   </li>
 );
 
-const OrgUnitList = () => {
-  const [query, setQuery] = useState(new URLSearchParams(window.location.search).get('q') || '');
-  const [selected, setSelected] = useState(null);
-  const { data, loading, error } = useQuery(GET_ORG_UNITS);
-
+const OrgUnitList = ({ query, setQuery, orgUnits, selectedOrgUnit, setOrgUnit }) => {
   const setSearchQuery = useCallback(
     (e) => {
       e.preventDefault();
@@ -40,42 +34,36 @@ const OrgUnitList = () => {
     [setQuery]
   );
 
-  if (loading || error) {
-    return null;
-  }
-  const orgUnits = data.orgUnits.map((ou) => {
-    const prefixes = ou.prefixes.map((prefix) => {
-      return `^${prefix}-|^${prefix}@`;
-    });
-    return { prefixesRegex: prefixes.join('|'), ...ou };
-  });
+  const onClearOrgUnit = useCallback(
+    (e) => {
+      e.preventDefault();
+      setOrgUnit(null);
+      setQueryString();
+      setQuery('');
+    },
+    [setOrgUnit, setQuery]
+  );
 
   return (
     <div className="col-sm-4 sidebar">
       <Search query={query} setQuery={setSearchQuery} />
       <h5>Foreninger/Utvalg</h5>
       <ul className="nav nav-sidebar orgunit-list">
-        <li className={ctx({ active: selected === null })}>
-          <a
-            href="/lists/"
-            onClick={(e) => {
-              e.preventDefault();
-              setSelected(null);
-              setQueryString();
-            }}
-          >
+        <li className={ctx({ active: selectedOrgUnit === null })}>
+          <a href="#" onClick={onClearOrgUnit}>
             Alle
           </a>
         </li>
-        {orgUnits.map((orgUnit) => (
+        {orgUnits.map((ou) => (
           <OrgUnit
-            key={orgUnit.id}
-            {...orgUnit}
-            selected={selected === orgUnit.id}
+            key={ou.id}
+            {...ou}
+            selected={selectedOrgUnit === ou.id}
             onClick={(e) => {
               e.preventDefault();
-              setSelected(orgUnit.id);
-              setQueryString({ orgunit: orgUnit.id });
+              setOrgUnit(ou.id);
+              setQueryString({ orgunit: ou.id });
+              setQuery('');
             }}
           />
         ))}
