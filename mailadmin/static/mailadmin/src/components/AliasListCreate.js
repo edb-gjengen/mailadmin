@@ -71,7 +71,7 @@ const AliasListCreate = ({ domain, lists, orgUnits }) => {
               <span className="input-group-text">{`@${domain.name}`}</span>
             </div>
           </div>
-          <EmailsTextarea source={listName} domainId={domain.id} create={shouldCreate} />
+          <EmailsTextarea source={listName} domainId={domain.id} create={shouldCreate} setName={setName} />
         </div>
       </div>
       {/* <div className="new-list-result"></div> */}

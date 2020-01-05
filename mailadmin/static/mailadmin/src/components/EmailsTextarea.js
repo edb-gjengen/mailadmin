@@ -5,7 +5,7 @@ import { parseEmails, notify } from '../utils';
 import { CREATE_ALIASES_MUTATION } from '../mutations';
 import { GET_ALIASES } from '../queries';
 
-const EmailsTextarea = ({ source, domainId, create = false }) => {
+const EmailsTextarea = ({ source, domainId, create = false, setName = null }) => {
   const [rawAliases, setRawAliases] = useState('');
   const [createAliases] = useMutation(CREATE_ALIASES_MUTATION);
 
@@ -19,6 +19,9 @@ const EmailsTextarea = ({ source, domainId, create = false }) => {
         variables: { input },
         update: (cache, { data }) => {
           setRawAliases('');
+          if (setName) {
+            setName('');
+          }
           const { createAliasesResponse: newAliases } = data;
           const { aliases: aliasesFromCache } = cache.readQuery({ query: GET_ALIASES });
           cache.writeQuery({
@@ -35,7 +38,7 @@ const EmailsTextarea = ({ source, domainId, create = false }) => {
         console.error(errors);
       }
     },
-    [aliases, create, createAliases, domainId, source]
+    [aliases, create, createAliases, domainId, setName, source]
   );
   return (
     <>

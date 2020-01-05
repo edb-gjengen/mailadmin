@@ -27,7 +27,8 @@ const MainArea = ({ query, selectedOrgUnit, orgUnits }) => {
     'source'
   );
 
-  const listPrefixes = selectedOrgUnit && orgUnits.find(({ id }) => id === selectedOrgUnit).prefixesRegex;
+  const selectedOrgUnitObj = selectedOrgUnit && orgUnits.find(({ id }) => id === selectedOrgUnit);
+  const listPrefixes = selectedOrgUnitObj && selectedOrgUnitObj.prefixesRegex;
   const listRegex = listPrefixes && new RegExp(listPrefixes);
 
   return (
@@ -42,7 +43,7 @@ const MainArea = ({ query, selectedOrgUnit, orgUnits }) => {
           }
           // Only render lists which matches the org units prefixes
           if (listRegex && !listRegex.test(list)) {
-            return null; // FIXME: use styles to show/hide ?
+            return null;
           }
           return <AliasList key={list} list={list} aliases={aliases} domain={domain} query={query} />;
         })}

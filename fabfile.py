@@ -14,6 +14,7 @@ def deploy(c):
 
     with c.cd(project_path), c.prefix('source {}/venv/bin/activate'.format(project_path)):
         c.run('git pull')  # Get source
+        c.run('pip install -U pip')
         c.run('pip install -r requirements.txt')  # install deps in virtualenv
         with c.cd('mailadmin/static/mailadmin'):  # install and compile frontend deps
             c.run('npm i')
