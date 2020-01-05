@@ -19,11 +19,7 @@ module.exports = (env, argv) => {
     plugins: [
       new MiniCssExtractPlugin(),
       env === 'production' ? new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/) : null,
-      env !== 'production' ? new HtmlWebpackPlugin({ template: './src/index.html' }) : null,
-      new webpack.ProvidePlugin({
-        $: 'jquery',
-        _: 'lodash'
-      })
+      env !== 'production' ? new HtmlWebpackPlugin({ template: './src/index.html' }) : null
     ].filter(Boolean),
     module: {
       rules: [

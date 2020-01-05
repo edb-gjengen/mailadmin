@@ -1,10 +1,10 @@
 import React from 'react';
-import { groupBy, sortBy } from 'lodash';
 import { useQuery } from '@apollo/react-hooks';
 
 import { GET_ALIASES, GET_DOMAINS } from '../queries';
 import AliasList from './AliasList';
 import AliasListCreate from './AliasListCreate';
+import { groupBy } from '../utils';
 
 const MainArea = ({ query, selectedOrgUnit, orgUnits }) => {
   const { data, loading, error } = useQuery(GET_ALIASES);
@@ -23,8 +23,8 @@ const MainArea = ({ query, selectedOrgUnit, orgUnits }) => {
   const domain = domainData.domains[0];
 
   const lists = groupBy(
-    sortBy(data.aliases, (alias) => alias.source),
-    (alias) => alias.source
+    data.aliases.sort((a, b) => a.source.localeCompare(b.source)),
+    'source'
   );
 
   const listPrefixes = selectedOrgUnit && orgUnits.find(({ id }) => id === selectedOrgUnit).prefixesRegex;

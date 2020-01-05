@@ -1,6 +1,4 @@
 import PNotify from 'pnotify/dist/es/PNotify';
-import PNotifyButtons from 'pnotify/dist/es/PNotifyButtons';
-import * as queryString from 'query-string';
 
 export function parseEmails(text) {
   if (text === undefined || text === '') {
@@ -24,11 +22,17 @@ export function parseEmails(text) {
   return [...new Set(emails)];
 }
 
+export const qsStringify = (obj) => {
+  const str = [];
+  for (const prop in obj)
+    if (obj.hasOwnProperty(prop)) {
+      str.push(`${encodeURIComponent(prop)}=${encodeURIComponent(obj[prop])}`);
+    }
+  return str.join('&');
+};
+
 export function setQueryString(obj) {
-  let qs = '';
-  if (obj) {
-    qs = `?${queryString.stringify(obj)}`;
-  }
+  const qs = obj ? `?${qsStringify(obj)}` : '';
   window.history.pushState(null, null, `/lists/${qs}`);
 }
 
@@ -63,3 +67,10 @@ export function getCookie(name) {
   }
   return cookieValue;
 }
+
+export const groupBy = (xs, key) => {
+  return xs.reduce((rv, x) => {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+};
