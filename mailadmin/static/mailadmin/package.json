@@ -22,7 +22,7 @@
     "graphql": "^14.5.8",
     "graphql-anywhere": "^4.2.6",
     "graphql-tag": "^2.10.1",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "pnotify": "^4.0.0",
     "popper.js": "^1.16.0",
     "qs": "^6.9.1",
