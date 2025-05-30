@@ -1,17 +1,21 @@
-from rest_framework import permissions
 import re
+
+from rest_framework import permissions
 
 from mailadmin.serializers import AliasSerializer
 
 
 class SourcePrefixOwner(permissions.BasePermission):
-    """ Ref: http://www.django-rest-framework.org/api-guide/permissions """
+    """Ref: http://www.django-rest-framework.org/api-guide/permissions"""
 
     def has_permission(self, request, view):
-        assert hasattr(view, 'user_prefixes')
+        assert hasattr(view, "user_prefixes")  # noqa: S101
 
         # Read permissions (GET, HEAD or OPTIONS) are allowed for all authenticated request
-        if request.method in permissions.SAFE_METHODS or request.method not in ['DELETE', 'POST']:
+        if request.method in permissions.SAFE_METHODS or request.method not in [
+            "DELETE",
+            "POST",
+        ]:
             return True
 
         if request.user.is_superuser:
@@ -29,8 +33,4 @@ class SourcePrefixOwner(permissions.BasePermission):
         # Prepare regular expression
         regexp = my_prefixes.as_regex()
         # All source adresses should match the prefix regexp
-        for alias in serializer.initial_data:
-            if re.search(regexp, alias.get('source', '')) is None:
-                return False
-
-        return True
+        return all(re.search(regexp, alias.get("source", "")) is not None for alias in serializer.initial_data)

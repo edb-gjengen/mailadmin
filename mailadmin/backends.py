@@ -17,14 +17,14 @@ class LDAPEmailBackend(LDAPBackend):
         the user's DN and ldap_user.attrs contains all of their LDAP attributes.
         """
         model = self.get_user_model()
-        username_field = getattr(model, 'USERNAME_FIELD', 'username')
+        username_field = getattr(model, "USERNAME_FIELD", "username")
 
         kwargs = {
-            username_field + '__iexact': ldap_user.attrs['uid'][0],
-            'defaults': {
-                username_field: ldap_user.attrs['uid'][0].lower(),
-                'email': email
-            }
+            username_field + "__iexact": ldap_user.attrs["uid"][0],
+            "defaults": {
+                username_field: ldap_user.attrs["uid"][0].lower(),
+                "email": email,
+            },
         }
 
         return model.objects.get_or_create(**kwargs)
