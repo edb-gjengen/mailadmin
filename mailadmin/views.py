@@ -1,21 +1,21 @@
+import logging
+
 from django.conf import settings
-from django.contrib.auth import login, logout as auth_logout
+from django.contrib.auth import login
+from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
-import logging
-from rest_framework import viewsets, views
+from django.shortcuts import redirect, render
+from rest_framework import status, views, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
 
 from mailadmin.api import DjangoPostfixDovecotAPI
 from mailadmin.models import OrgUnit, Prefix
-from mailadmin.serializers import UserSerializer, OrgUnitSerializer, AliasSerializer
 from mailadmin.permissions import SourcePrefixOwner
-
+from mailadmin.serializers import AliasSerializer, OrgUnitSerializer, UserSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -26,14 +26,13 @@ def index(request):
         if form.is_valid():
             # Log the user in.
             login(request, form.get_user())
-            return redirect('lists')
+            return redirect("lists")
+    elif request.user.is_authenticated:
+        return redirect("lists")
     else:
-        if request.user.is_authenticated:
-            return redirect('lists')
-        else:
-            form = AuthenticationForm(request)
+        form = AuthenticationForm(request)
 
-    return render(request, "index.html", {'form': form})
+    return render(request, "index.html", {"form": form})
 
 
 @login_required
@@ -43,19 +42,22 @@ def lists(request):
 
 def logout(request):
     auth_logout(request)
-    return redirect('index')
+    return redirect("index")
 
 
 class BaseAliasesView(views.APIView):
     _api = DjangoPostfixDovecotAPI()
-    permission_classes = (IsAuthenticated, SourcePrefixOwner,)
+    permission_classes = (
+        IsAuthenticated,
+        SourcePrefixOwner,
+    )
 
     def _user_groups(self, request):
-        group_filter = request.query_params.get('groups', None)
+        group_filter = request.query_params.get("groups", None)
         if group_filter is None:
             user_groups = request.user.groups.all()
         else:
-            group_filter = group_filter.split(',') if ',' in group_filter else [group_filter]
+            group_filter = group_filter.split(",") if "," in group_filter else [group_filter]
             user_groups = request.user.groups.filter(pk__in=group_filter)
 
         return user_groups
@@ -71,14 +73,15 @@ class BaseAliasesView(views.APIView):
 
 
 class AliasesView(BaseAliasesView):
-    """ List and create aliases from django-postfix-dovecot-api """
+    """List and create aliases from django-postfix-dovecot-api"""
+
     def get(self, request):
         user_prefixes = self.user_prefixes(request)
 
         # Prepare regular expression
         regex = user_prefixes.as_regex()
         if len(user_prefixes) == 0:
-            return Response({'result': 'No results'})  # Need at least one
+            return Response({"result": "No results"})  # Need at least one
 
         return Response(self._api.list_aliases_regex(regex))
 
@@ -91,7 +94,8 @@ class AliasesView(BaseAliasesView):
 
 
 class AliasesDeleteView(BaseAliasesView):
-    """ Delete aliases (using POST) from django-postfix-dovecot-api """
+    """Delete aliases (using POST) from django-postfix-dovecot-api"""
+
     def post(self, request):
         aliases = AliasSerializer(data=request.data, many=True)
         if not aliases.is_valid():
@@ -128,7 +132,7 @@ class OrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_domains(request):
     api = DjangoPostfixDovecotAPI()
     domains = api.list_domains(name=settings.NEUF_EMAIL_DOMAIN_NAME)

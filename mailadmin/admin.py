@@ -10,9 +10,10 @@ class PrefixInline(admin.TabularInline):
 
 @admin.register(OrgUnit)
 class OrgUnitAdmin(admin.ModelAdmin):
-    list_display = ('name', 'is_active')
-    list_filter = ('is_active',)
-    filter_horizontal = ('admin_groups', 'member_groups')
+    list_display = ("name", "is_active")
+    list_filter = ("is_active",)
+    filter_horizontal = ("admin_groups", "member_groups")
     inlines = [PrefixInline]
+
 
 admin.site.register(Prefix)

@@ -8,3 +8,4 @@ node_modules/
 .sass-cache/
 staticfiles/
 mailadmin/static/mailadmin/dist/
+__pycache__/

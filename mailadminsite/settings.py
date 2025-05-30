@@ -1,4 +1,6 @@
+import contextlib
 from pathlib import Path
+
 import ldap
 from django_auth_ldap.config import LDAPSearch, PosixGroupType
 
@@ -9,7 +11,7 @@ BASE_DIR = Path(__file__).parent.parent
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'g658807^w2!kzsdb_wznxo$5xpjb2x(sfoub%l_ap77@@_zt&*'
+SECRET_KEY = "g658807^w2!kzsdb_wznxo$5xpjb2x(sfoub%l_ap77@@_zt&*"  # noqa: S105
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -18,56 +20,55 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
-    'rest_framework',
-    'bootstrap4',
-    'mailadmin',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "rest_framework",
+    "bootstrap4",
+    "mailadmin",
 )
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
-ROOT_URLCONF = 'mailadminsite.urls'
+ROOT_URLCONF = "mailadminsite.urls"
 
-WSGI_APPLICATION = 'mailadminsite.wsgi.application'
+WSGI_APPLICATION = "mailadminsite.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR.joinpath('db.sqlite3'),
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR.joinpath("db.sqlite3"),
     }
 }
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.contrib.auth.context_processors.auth',
-                'django.template.context_processors.debug',
-                'django.template.context_processors.i18n',
-                'django.template.context_processors.media',
-                'django.template.context_processors.static',
-                'django.template.context_processors.tz',
-                'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.contrib.auth.context_processors.auth",
+                "django.template.context_processors.debug",
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.media",
+                "django.template.context_processors.static",
+                "django.template.context_processors.tz",
+                "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.request",
             ],
         },
     },
@@ -75,35 +76,35 @@ TEMPLATES = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
-LANGUAGE_CODE = 'nb'
-TIME_ZONE = 'Europe/Oslo'
+LANGUAGE_CODE = "nb"
+TIME_ZONE = "Europe/Oslo"
 USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR.joinpath('staticfiles')
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR.joinpath("staticfiles")
 
-LOGIN_REDIRECT_URL = '/lists/'
+LOGIN_REDIRECT_URL = "/lists/"
 
 # Django Postfix Dovecot
-DPD_API_URL = 'http://localhost:8080/api'
+DPD_API_URL = "http://localhost:8080/api"
 DPD_API_USERNAME = ""
 DPD_API_PASSWORD = ""
 
-NEUF_EMAIL_DOMAIN_NAME = 'stry.no'
+NEUF_EMAIL_DOMAIN_NAME = "stry.no"
 
 AUTHENTICATION_BACKENDS = (
-    'mailadmin.backends.LDAPEmailBackend',
-    'mailadmin.backends.LDAPUsernameBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    "mailadmin.backends.LDAPEmailBackend",
+    "mailadmin.backends.LDAPUsernameBackend",
+    "django.contrib.auth.backends.ModelBackend",
 )
 
 # LDAP server URI and BIND_DN, same as db-settings
-AUTH_LDAP_U_SERVER_URI = 'ldap://localhost/'
-AUTH_LDAP_U_BIND_DN = 'cn=admin,dc=neuf,dc=no'
-AUTH_LDAP_U_BIND_PASSWORD = 'toor'
+AUTH_LDAP_U_SERVER_URI = "ldap://localhost/"
+AUTH_LDAP_U_BIND_DN = "cn=admin,dc=neuf,dc=no"
+AUTH_LDAP_U_BIND_PASSWORD = "toor"  # noqa: S105
 
 # Basic user auth
 AUTH_LDAP_U_USER_SEARCH = LDAPSearch("ou=People,dc=neuf,dc=no", ldap.SCOPE_ONELEVEL, "(uid=%(user)s)")
@@ -116,7 +117,7 @@ AUTH_LDAP_U_MIRROR_GROUPS = True
 AUTH_LDAP_U_USER_FLAGS_BY_GROUP = {
     "is_active": "cn=dns-aktiv,ou=Groups,dc=neuf,dc=no",
     "is_staff": "cn=edb,ou=Groups,dc=neuf,dc=no",
-    "is_superuser": "cn=edbadmin,ou=Groups,dc=neuf,dc=no"
+    "is_superuser": "cn=edbadmin,ou=Groups,dc=neuf,dc=no",
 }
 # User attribute mappings
 AUTH_LDAP_U_USER_ATTR_MAP = {
@@ -125,9 +126,7 @@ AUTH_LDAP_U_USER_ATTR_MAP = {
     "email": "mail",
 }
 # User profile attribute mappings
-AUTH_LDAP_U_PROFILE_ATTR_MAP = {
-    "home_directory": "homeDirectory"
-}
+AUTH_LDAP_U_PROFILE_ATTR_MAP = {"home_directory": "homeDirectory"}
 # Allways update the django user object on authentication.
 AUTH_LDAP_U_ALWAYS_UPDATE_USER = True
 
@@ -146,16 +145,10 @@ AUTH_LDAP_E_USER_ATTR_MAP = AUTH_LDAP_U_USER_ATTR_MAP
 AUTH_LDAP_E_PROFILE_ATTR_MAP = AUTH_LDAP_U_PROFILE_ATTR_MAP
 AUTH_LDAP_E_ALWAYS_UPDATE_USER = AUTH_LDAP_U_ALWAYS_UPDATE_USER
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-    )
-}
+REST_FRAMEWORK = {"DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.SessionAuthentication",)}
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Local settings
-try:
-    from .local_settings import *
-except ImportError:
-    pass
+with contextlib.suppress(ImportError):
+    from .local_settings import *  # noqa: F403
