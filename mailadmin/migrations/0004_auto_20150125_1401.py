@@ -2,7 +2,7 @@ import django.db.models.deletion
 from django.db import migrations, models
 
 
-def normalize_prefixes(apps, schema_editor):
+def normalize_prefixes(apps, schema_editor):  # noqa: ARG001
     Prefix = apps.get_model("mailadmin", "Prefix")
     OrgUnit = apps.get_model("mailadmin", "OrgUnit")
 

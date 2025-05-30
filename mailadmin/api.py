@@ -3,7 +3,7 @@ import logging
 import requests
 from django.conf import settings
 from requests.auth import HTTPBasicAuth
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError  # noqa: A004
 from rest_framework import exceptions, status
 
 logger = logging.getLogger(__name__)
@@ -41,7 +41,7 @@ class DjangoPostfixDovecotAPI:
         url = f"{self.base_url}{path}"
 
         try:
-            r = requests.request(
+            r = requests.request(  # noqa: S113
                 method,
                 url,
                 params=params,
@@ -52,7 +52,7 @@ class DjangoPostfixDovecotAPI:
         except ConnectionError as e:
             msg = f"mxapi at {url} unavailable {e!s}"
             logger.warning(msg)
-            raise DPDAPIException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail={"error": msg})
+            raise DPDAPIException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail={"error": msg})  # noqa: B904
 
         try:
             r.raise_for_status()
@@ -61,7 +61,7 @@ class DjangoPostfixDovecotAPI:
             try:
                 raise DPDAPIException(status_code=e.response.status_code, detail=e.response.json())
             except ValueError:
-                raise DPDAPIException(status_code=e.response.status_code, detail="mxapi fatal error")
+                raise DPDAPIException(status_code=e.response.status_code, detail="mxapi fatal error")  # noqa: B904
 
         try:
             ret = r.json()

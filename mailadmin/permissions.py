@@ -9,7 +9,7 @@ class SourcePrefixOwner(permissions.BasePermission):
     """Ref: http://www.django-rest-framework.org/api-guide/permissions"""
 
     def has_permission(self, request, view):
-        assert hasattr(view, "user_prefixes")
+        assert hasattr(view, "user_prefixes")  # noqa: S101
 
         # Read permissions (GET, HEAD or OPTIONS) are allowed for all authenticated request
         if request.method in permissions.SAFE_METHODS or request.method not in [

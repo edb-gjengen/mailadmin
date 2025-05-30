@@ -133,7 +133,7 @@ class OrgUnitViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 @api_view(["GET"])
-def get_domains(request):
+def get_domains(request):  # noqa: ARG001
     api = DjangoPostfixDovecotAPI()
     domains = api.list_domains(name=settings.NEUF_EMAIL_DOMAIN_NAME)
 
