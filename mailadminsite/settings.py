@@ -1,9 +1,8 @@
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
+from pathlib import Path
 import ldap
 from django_auth_ldap.config import LDAPSearch, PosixGroupType
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BASE_DIR = Path(__file__).parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -50,7 +49,7 @@ WSGI_APPLICATION = 'mailadminsite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': BASE_DIR.joinpath('db.sqlite3'),
     }
 }
 
@@ -68,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -78,14 +78,12 @@ TEMPLATES = [
 LANGUAGE_CODE = 'nb'
 TIME_ZONE = 'Europe/Oslo'
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+STATIC_ROOT = BASE_DIR.joinpath('staticfiles')
 
 LOGIN_REDIRECT_URL = '/lists/'
 
@@ -153,6 +151,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     )
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Local settings
 try:

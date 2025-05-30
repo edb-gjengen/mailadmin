@@ -1,11 +1,11 @@
-from django.urls import path, re_path
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from mailadmin.views import MyUserViewSet, MyOrgUnitViewSet, OrgUnitViewSet, AliasesView, get_domains, index, lists, \
     AliasesDeleteView
 
 urlpatterns = [
-    re_path(r'^$', index, name='index'),
+    path('', index, name='index'),
     path('lists/', lists, name='lists'),
 ]
 

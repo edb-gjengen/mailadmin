@@ -8,11 +8,11 @@ class PrefixInline(admin.TabularInline):
     extra = 0
 
 
+@admin.register(OrgUnit)
 class OrgUnitAdmin(admin.ModelAdmin):
     list_display = ('name', 'is_active')
     list_filter = ('is_active',)
     filter_horizontal = ('admin_groups', 'member_groups')
     inlines = [PrefixInline]
 
-admin.site.register(OrgUnit, OrgUnitAdmin)
 admin.site.register(Prefix)
